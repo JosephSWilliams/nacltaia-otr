@@ -50,7 +50,7 @@ while 1:
           taias[src] = taia_now
           taia_now   = binascii.hexlify(nacltaia.taia_now())
 
-        if long(taia,16) < long(taias[src],16):
+        if long(taia,16) <= long(taias[src],16):
           continue
 
         taias[src] = taia
