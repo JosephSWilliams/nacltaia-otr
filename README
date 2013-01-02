@@ -20,7 +20,7 @@ amd64:
   for libtai.
 
   cd /usr/local/src/libtai-*
-  sed 's/gcc /gcc -fPIC /' conf-*
+  sed 's/gcc /gcc -fPIC /' conf-* -i
   make
   cp libtai.a /usr/lib/libtai.a
 
