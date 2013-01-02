@@ -1,0 +1,42 @@
+nacltaia-otr:
+  provides authenticated and encrypted messages
+  and protects recepients from forgeries and
+  replay attacks through the protocol of IRC in
+  a chroot environment.
+
+  plaintxt less than ( 128 - 16 ) bytes will
+  always yeild 128 byte ciphertext before
+  base91a encoding.
+
+depends:
+  python(>=2.6), python-dev(>=2.6), nacl
+
+recommends:
+  cython, ucspi-tcp, urcd
+
+install:
+  # python2.6
+  ./Make.sh
+
+  # python2.7
+  sed 's/\.6/.7/g' Make.sh | sh
+
+  mkdir -p crypto/
+  mkdir -p crypto/dstkey/
+
+  printf $pubkey > crypto/pubkey
+  printf $seckey > crypto/seckey
+
+adding peers:
+  printf $pubkey > crypto/dstkey/$peer
+
+urcd:
+  # from cwd of urcd
+
+  ln -s /path/to/nacltaia-otr/stdin `pwd`/stdin
+  ln -s /path/to/nacltaia-otr/stdout `pwd`/stdout
+  ln -s /path/to/nacltaia-otr/crypto `pwd`/crypto
+
+ucspi-tcp:
+  tcpserver 127.0.0.1 6667 tcpclient irc.crypto.net 6667 ./stdio &
+  irssi -c 127.0.0.1

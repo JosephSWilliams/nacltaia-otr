@@ -1,0 +1,2 @@
+#!/bin/sh
+exec tcpserver `cat env/localaddr` `cat env/localport` tcpclient `cat env/remoteaddr` `cat env/remoteport` ./stdio
