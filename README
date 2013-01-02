@@ -9,7 +9,7 @@ nacltaia-otr:
   base91a encoding.
 
 depends:
-  python(>=2.6), python-dev(>=2.6), nacl
+  python(>=2.6), python-dev(>=2.6), nacl, libtai
 
 recommends:
   cython, ucspi-tcp, urcd
