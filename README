@@ -15,6 +15,15 @@ depends:
 recommends:
   cython, ucspi-tcp, urcd
 
+amd64:
+  amd64 architectures will complain about PIC
+  for libtai.
+
+  cd /usr/local/src/libtai-*
+  sed 's/gcc /gcc -fPIC /' conf-*
+  make
+  cp libtai.a /usr/lib/libtai.a
+
 install:
   # python2.6
   ./Make.sh
