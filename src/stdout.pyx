@@ -9,7 +9,7 @@ taias    = dict()
 taia_now = binascii.hexlify(nacltaia.taia_now())
 sk       = binascii.unhexlify(open('crypto/seckey','rb').read(64))
 
-os.chdir('crypto/dstkey/')
+os.chdir('crypto/')
 os.chroot(os.getcwd())
 
 while 1:
@@ -25,11 +25,11 @@ while 1:
     if byte != '\r':
       buffer+=byte
 
-  if re.search('^:\w+!\w+@[\w.]+ ((PRIVMSG)|(NOTICE)|(TOPIC)) #?\w+ :.*$',buffer.upper()):
+  if re.search('^:\w+!\w+@[\w.]+ ((PRIVMSG)|(NOTICE)|(TOPIC)) \w+ :.*$',buffer.upper()):
 
     src = buffer.split(':',2)[1].split('!',1)[0].lower()
 
-    if src in os.listdir(os.getcwd()):
+    if src in os.listdir('dstkey/'):
       try:
 
         c = base91a.decode(buffer.split(':',2)[2])[24:]
@@ -38,8 +38,42 @@ while 1:
         if len(n) + len(c) < 24 + 16:
           continue
 
-        pk = binascii.unhexlify(open(src,'rb').read(64))
+        pk = binascii.unhexlify(open('dstkey/'+src,'rb').read(64))
         m  = nacltaia.crypto_box_open(c,n,pk,sk).split('\n',1)[0]
+
+        if m == 0:
+          continue
+
+        taia = binascii.hexlify(n[:16])
+
+        if not src in taias.keys():
+          taias[src] = taia_now
+          taia_now   = binascii.hexlify(nacltaia.taia_now())
+
+        if long(taia,16) <= long(taias[src],16):
+          continue
+
+        taias[src] = taia
+        buffer     = ':' + buffer.split(':',2)[1] + ':' + m
+
+      except:
+        continue
+
+  elif re.search('^:\w+!\w+@[\w.]+ ((PRIVMSG)|(NOTICE)|(TOPIC)) #\w+ :.*$',buffer.upper()):
+
+    src = buffer.split(' ',3)[2].lower()[1:]
+
+    if src in os.listdir('chnkey/'):
+      try:
+
+        c = base91a.decode(buffer.split(':',2)[2])[24:]
+        n = base91a.decode(buffer.split(':',2)[2])[:24]
+
+        if len(n) + len(c) < 24 + 16:
+          continue
+
+        k = binascii.unhexlify(open('chnkey/'+src,'rb').read(64))
+        m = nacltaia.crypto_secretbox_open(c,n,k).split('\n',1)[0]
 
         if m == 0:
           continue

@@ -32,13 +32,18 @@ install:
 
   mkdir -p crypto/
   mkdir -p crypto/dstkey/
+  mkdir -p crypto/chnkey/
 
   printf $pubkey > crypto/pubkey
   printf $seckey > crypto/seckey
 
-adding peers:
-  # [security] $peer should be lowercase
-  printf $pubkey > crypto/dstkey/$peer
+adding crypto:
+  # [security] $nick should be lowercase
+  printf $pubkey > crypto/dstkey/$nick
+
+  # [security] $channel should be lowercase
+  # with no hashtag
+  printf $seckey > crypto/chnkey/$channel
 
 urcd:
   # from cwd of urcd
