@@ -4,10 +4,6 @@ nacltaia-otr:
   replay attacks through the protocol of IRC in
   a chroot environment.
 
-  plaintxt less than ( 128 - 16 ) bytes will
-  always yeild 128 byte ciphertext before
-  base91a encoding.
-
 depends:
   python(>=2.6), python-dev(>=2.6), nacl, libtai,
   gcc, sh

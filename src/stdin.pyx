@@ -32,10 +32,7 @@ while 1:
     if dst in os.listdir(os.getcwd()):
 
       m      = buffer.split(':',1)[1]
-
-      if len(m) < (128-16):
-        m   += '\n' + array.array('B',[rR(0,256) for i in range(0,128-16-len(m)-1)]).tostring()
-
+      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,112-len(m)%112-1)]).tostring()
       n      = nacltaia.taia_now()
       n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
       pk     = binascii.unhexlify(open(dst,'rb').read(64))
