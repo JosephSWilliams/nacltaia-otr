@@ -9,11 +9,13 @@ depends:
   gcc, sh
 
 recommends:
-  cython, ucspi-tcp, urcd
+  cython(>=0.17.3), ucspi-tcp, urcd
 
-amd64:
-  # amd64 architectures will complain about PIC
-  # for libtai.
+todo:
+  create base91a.c, fixes for intel (x86_64)
+
+intel install (x86_64):
+  # will complain about PIC for libtai.a
 
   cd /usr/local/src/libtai-*
   sed 's/gcc /gcc -fPIC /' conf-* -i
@@ -23,8 +25,20 @@ amd64:
   cp libtai.a /usr/lib/libtai.a
   cp *.h /usr/include/
 
-todo:
-  create base91a.c
+  cd $OLDPWD
+
+  # python2.6
+  sed 's/cython/nocython/g' Make.sh | sh
+
+  # python2.7
+  sed 's/cython/nocython/g' Make.sh | sed 's/\.6/.7/g' | sh
+
+  mkdir -p crypto/
+  mkdir -p crypto/dstkey/
+  mkdir -p crypto/chnkey/
+
+  printf $pubkey > crypto/pubkey
+  printf $seckey > crypto/seckey
 
 install:
   # python2.6
