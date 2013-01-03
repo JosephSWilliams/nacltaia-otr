@@ -27,7 +27,7 @@ while 1:
 
   if re.search('^((PRIVMSG)|(NOTICE)|(TOPIC)) #?\w+ :.*$',buffer.upper()):
 
-    dst = buffer.split(' ',2)[1]
+    dst = buffer.split(' ',2)[1].lower()
 
     if dst in os.listdir(os.getcwd()):
 
