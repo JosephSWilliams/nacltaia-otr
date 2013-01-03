@@ -64,7 +64,11 @@ while 1:
     src = buffer.split(':',2)[1].split('!',1)[0].lower()
     dst = buffer.split(' ',3)[2].lower()[1:]
 
-    if dst in os.listdir('chnkey/') and src in os.listdir('dstkey/'):
+    if dst in os.listdir('chnkey/'):
+
+      if not src in os.listdir('dstkey/'):
+        continue
+
       try:
 
         c = base91a.decode(buffer.split(':',2)[2])[24:]
