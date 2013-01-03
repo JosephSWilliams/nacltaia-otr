@@ -23,6 +23,9 @@ amd64:
   cp libtai.a /usr/lib/libtai.a
   cp *.h /usr/include/
 
+todo:
+  create base91a.c
+
 install:
   # python2.6
   ./Make.sh

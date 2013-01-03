@@ -1,6 +1,5 @@
 def encode(binary):
-  b, n = 0, 0
-  string = str()
+  string, b, n = str(), 0, 0
   for byte in binary:
     b |= ord(byte) << n
     n += 8
@@ -21,14 +20,13 @@ def encode(binary):
   return string
 
 def decode(string):
-  v, b, n = -1, 0, 0
-  binary = str()
+  binary, v, b, n = str(), -1, 0, 0
   for byte in string:
     c = ord(byte) - 33
     if(v < 0):
       v = c
     else:
-      v += c*91
+      v += c * 91
       b |= v << n
       n += 13 if (v & 8191)>88 else 14
       while 1:
