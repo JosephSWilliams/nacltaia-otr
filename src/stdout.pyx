@@ -61,9 +61,10 @@ while 1:
 
   elif re.search('^:\w+!\w+@[\w.]+ ((PRIVMSG)|(NOTICE)|(TOPIC)) #\w+ :.*$',buffer.upper()):
 
-    src = buffer.split(' ',3)[2].lower()[1:]
+    src = buffer.split(':',2)[1].split('!',1)[0].lower()
+    dst = buffer.split(' ',3)[2].lower()[1:]
 
-    if src in os.listdir('chnkey/'):
+    if dst in os.listdir('chnkey/') and src in os.listdir('dstkey/'):
       try:
 
         c = base91a.decode(buffer.split(':',2)[2])[24:]
@@ -72,7 +73,7 @@ while 1:
         if len(n) + len(c) < 24 + 16:
           continue
 
-        k = binascii.unhexlify(open('chnkey/'+src,'rb').read(64))
+        k = binascii.unhexlify(open('chnkey/'+dst,'rb').read(64))
         m = nacltaia.crypto_secretbox_open(c,n,k).split('\n',1)[0]
 
         if m == 0:

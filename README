@@ -39,10 +39,14 @@ install:
 
 adding crypto:
   # [security] $nick should be lowercase
+
   printf $pubkey > crypto/dstkey/$nick
 
   # [security] $channel should be lowercase
-  # with no hashtag
+  # with no hashtag. $nick should be
+  # lowercase
+
+  printf $pubkey > crypto/dstkey/$nick
   printf $seckey > crypto/chnkey/$channel
 
 urcd:
