@@ -27,7 +27,7 @@ while 1:
 
   if re.search('^:\w+!\w+@[\w.]+ ((PRIVMSG)|(NOTICE)|(TOPIC)) #?\w+ :.*$',buffer.upper()):
 
-    src = buffer.split(':',2)[1].split('!',1)[0]
+    src = buffer.split(':',2)[1].split('!',1)[0].lower()
 
     if src in os.listdir(os.getcwd()):
       try:
