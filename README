@@ -4,6 +4,24 @@ nacltaia-otr:
   replay attacks through the protocol of IRC in
   a chroot environment.
 
+  the chosen primitives for PM are:
+
+  taia64 + curve25519xsalsa20poly1305 + base91a
+
+  the selected primitives provide authenticated,
+  encrypted messages from a sender (seckey), to
+  a receiver (pubkey). the protocol protects
+  receivers from forgeries and replay attacks.
+
+  the chose primitives for CHAT are:
+
+  taia64 + crypto_secretbox_xsalsa20poly1305 + base91a
+
+  the selected primitives provide authenticated,
+  encrypted messages for senders to receivers
+  with a shared seckey. the protocol protects
+  receivers from forgeries and replay attacks.
+
 depends:
   python(>=2.6), python-dev(>=2.6), nacl, libtai,
   gcc, sh
