@@ -32,8 +32,9 @@ while 1:
     if src in os.listdir('dstkey/'):
       try:
 
-        c = base91a.decode(buffer.split(':',2)[2])[24:]
-        n = base91a.decode(buffer.split(':',2)[2])[:24]
+        c = base91a.decode(buffer.split(':',2)[2])
+        n = c[:24]
+        c = c[24:]
 
         if len(n) + len(c) < 24 + 16:
           continue
@@ -71,8 +72,9 @@ while 1:
 
       try:
 
-        c = base91a.decode(buffer.split(':',2)[2])[24:]
-        n = base91a.decode(buffer.split(':',2)[2])[:24]
+        c = base91a.decode(buffer.split(':',2)[2])
+        n = c[:24]
+        c = c[24:]
 
         if len(n) + len(c) < 24 + 16:
           continue

@@ -15,5 +15,5 @@ crypto_box_keypair(pk,sk);
 	  printf("\n");
 }
 
-void randombytes(char* bytes) {
+void randombytes(char *bytes) {
 	           read(0,bytes,32);}
