@@ -13,7 +13,7 @@ nacltaia-otr:
   a receiver (pubkey). the protocol protects
   receivers from forgeries and replay attacks.
 
-  the chose primitives for CHAT are:
+  the chosen primitives for CHAT are:
 
   taia64 + crypto_secretbox_xsalsa20poly1305 + base91a
 
