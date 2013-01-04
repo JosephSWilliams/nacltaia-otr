@@ -22,6 +22,15 @@ nacltaia-otr:
   with a shared seckey. the protocol protects
   receivers from forgeries and replay attacks.
 
+  IMHO PM/CHAT messages are usually between 0 and 128
+  bytes length. nacltaia-otr automatically pads each
+  message in 128 byte blocks. in example, the messages
+  "Hi, :-)" and "How are you?" will result in the same
+  size 128 byte ciphertext. messages greater than 128
+  bytes will be padded to meet the full 128 byte block.
+  the tradeoff here is a small additional overhead for
+  considerably stronger security.
+
 depends:
   python(>=2.6), python-dev(>=2.6), nacl, libtai,
   gcc, sh
