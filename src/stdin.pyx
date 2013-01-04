@@ -5,12 +5,16 @@ import binascii
 import nacltaia
 import base91a
 import array
+import pwd
 import re
 
 sk = binascii.unhexlify(open('crypto/seckey','rb').read(64))
 
+uid = pwd.getpwnam('nacltaia-otr')[2]
 os.chdir('crypto/')
 os.chroot(os.getcwd())
+os.setuid(uid)
+del uid
 
 while 1:
 

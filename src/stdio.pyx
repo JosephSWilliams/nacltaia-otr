@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import subprocess
 import select
+import pwd
 import sys
 import os
 
@@ -13,6 +14,12 @@ o = subprocess.Popen(['./stdout'],
     stdin  = -1,
     )
 wr = o.stdin.fileno()
+
+uid = pwd.getpwnam('nacltaia-otr')[2]
+os.chdir('crypto/')
+os.chroot(os.getcwd())
+os.setuid(uid)
+del uid
 
 client_POLLIN=select.poll()
 client_POLLIN.register(rd,3)

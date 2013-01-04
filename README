@@ -54,6 +54,8 @@ intel install (x86_64):
 
   cd $OLDPWD
 
+  useradd nacltaia-otr
+
   # python2.6
   sed 's/cython/nocython/g' Make.sh | sh
 
@@ -70,6 +72,9 @@ intel install (x86_64):
   printf $seckey > crypto/seckey
 
 install:
+
+  useradd nacltaia-otr
+
   # python2.6
   ./Make.sh
 
