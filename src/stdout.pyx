@@ -7,6 +7,7 @@ import pwd
 import re
 
 taias    = dict()
+RE       = 'a-zA-Z0-9^(\)-_{\}[\]|'
 taia_now = binascii.hexlify(nacltaia.taia_now())
 sk       = binascii.unhexlify(open('crypto/seckey','rb').read(64))
 
@@ -29,7 +30,7 @@ while 1:
     if byte != '\r':
       buffer+=byte
 
-  if re.search('^:\w+!\w+@[\w.]+ ((PRIVMSG)|(NOTICE)|(TOPIC)) \w+ :.*$',buffer.upper()):
+  if re.search('^:['+RE+']+!['+RE+']+@['+RE+'.]+ ((PRIVMSG)|(NOTICE)|(TOPIC)) ['+RE+']+ :.*$',buffer.upper()):
 
     src = buffer.split(':',2)[1].split('!',1)[0].lower()
 
@@ -64,7 +65,7 @@ while 1:
       except:
         continue
 
-  elif re.search('^:\w+!\w+@[\w.]+ ((PRIVMSG)|(NOTICE)|(TOPIC)) #\w+ :.*$',buffer.upper()):
+  elif re.search('^:['+RE+']+!['+RE+']+@['+RE+'.]+ ((PRIVMSG)|(NOTICE)|(TOPIC)) #['+RE+']+ :.*$',buffer.upper()):
 
     src = buffer.split(':',2)[1].split('!',1)[0].lower()
     dst = buffer.split(' ',3)[2].lower()[1:]

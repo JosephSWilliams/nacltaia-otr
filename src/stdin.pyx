@@ -8,6 +8,7 @@ import array
 import pwd
 import re
 
+RE = 'a-zA-Z0-9^(\)-_{\}[\]|'
 sk = binascii.unhexlify(open('crypto/seckey','rb').read(64))
 
 uid = pwd.getpwnam('nacltaia-otr')[2]
@@ -29,7 +30,7 @@ while 1:
     if byte != '\r':
       buffer+=byte
 
-  if re.search('^((PRIVMSG)|(NOTICE)|(TOPIC)) \w+ :.*$',buffer.upper()):
+  if re.search('^((PRIVMSG)|(NOTICE)|(TOPIC)) ['+RE+']+ :.*$',buffer.upper()):
 
     dst = buffer.split(' ',2)[1].lower()
 
@@ -43,7 +44,7 @@ while 1:
       c      = nacltaia.crypto_box(m,n,pk,sk)
       buffer = buffer.split(':',1)[0] + ':' + base91a.encode(n+c)
 
-  elif re.search('^((PRIVMSG)|(NOTICE)|(TOPIC)) #\w+ :.*$',buffer.upper()):
+  elif re.search('^((PRIVMSG)|(NOTICE)|(TOPIC)) #['+RE+']+ :.*$',buffer.upper()):
 
     dst = buffer.split(' ',2)[1].lower()[1:]
 
