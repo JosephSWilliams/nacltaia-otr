@@ -108,8 +108,9 @@ while 1:
   buffer = re.sub('[\x02\x0f]','',buffer)
   buffer = re.sub('\x01(ACTION )?','*',buffer)
   buffer = re.sub('\x03[0-9][0-9]?(,[0-9][0-9]?)?','',buffer)
-  buffer = str({str():buffer})[6:][:len(str({str():buffer})[6:])-2]
+  buffer = str({str():buffer})[6:][:len(str({str():buffer})[6:])-2] + '\n'
   buffer = buffer.replace("\\'","'")
   buffer = buffer.replace('\\\\','\\')
 
-  os.write(1,buffer+'\n')
+  if len(buffer)<=1024:
+    os.write(1,buffer)
