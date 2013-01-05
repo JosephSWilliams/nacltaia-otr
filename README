@@ -31,6 +31,14 @@ nacltaia-otr:
   the tradeoff here is a small additional overhead for
   considerably stronger security.
 
+  IRC messages may often contain binary encoding. this
+  can allow an attacker to tamper with internal
+  mechanisms in some IRC clients, often without the
+  user's knowledge. in worst cases it can even allow
+  an attacker to execute arbitrary code on the victim's
+  machine. nacltaia-otr automatically purges all binary
+  encoding before it makes it to the IRC client.
+
 depends:
   python(>=2.6), python-dev(>=2.6), nacl, libtai,
   gcc, sh
