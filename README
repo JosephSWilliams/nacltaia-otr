@@ -31,6 +31,12 @@ nacltaia-otr:
   the tradeoff here is a small additional overhead for
   considerably stronger security.
 
+  before nacltaia-otr begins handling incoming and
+  outgoing remote data, it locks itself into a chroot
+  jail and throws aways the key. this isn't just an
+  option for security, it's the only way to run
+  nacltaia-otr.
+
   IRC messages may often contain binary encoding. this
   can allow an attacker to tamper with internal
   mechanisms in some IRC clients, often without the
