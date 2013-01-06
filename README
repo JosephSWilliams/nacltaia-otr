@@ -37,6 +37,13 @@ nacltaia-otr:
   option for security, it's the only way to run
   nacltaia-otr.
 
+  the chosen encryption schemes of nacltaia-otr will
+  never violate your repudiability. sending ciphertext
+  through nacltaia-otr cannot substantiate a sender as
+  the source of a message anymore than sending the same
+  message in plaintext. it does this while still
+  preventing third-party forgeries.
+
   IRC messages may often contain binary encoding. this
   can allow an attacker to tamper with internal
   mechanisms in some IRC clients, often without the
