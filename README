@@ -1,8 +1,8 @@
 nacltaia-otr:
   provides authenticated and encrypted messages
-  and protects recepients from forgeries and
-  replay attacks through the protocol of IRC in
-  a chroot environment.
+  and protects recepients from forgeries, replay
+  attacks, and other shenannigans through the
+  protocol of IRC in a chroot environment.
 
   the chosen primitives for PM are:
 
