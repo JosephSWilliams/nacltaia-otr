@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import sys, os ; sys.path.append(os.getcwd())
+import unicodedata
 import binascii
 import nacltaia
 import base91a
@@ -105,6 +106,7 @@ while 1:
       except:
         continue
 
+  buffer = unicodedata.normalize('NFKD',unicode(buffer,'utf-8','replace')).encode('ascii','ignore')
   buffer = re.sub('[\x02\x0f]','',buffer)
   buffer = re.sub('\x01(ACTION )?','*',buffer) # contains potential irssi bias
   buffer = re.sub('\x03[0-9][0-9]?(,[0-9][0-9]?)?','',buffer)
@@ -112,5 +114,5 @@ while 1:
   buffer = buffer.replace("\\'","'")
   buffer = buffer.replace('\\\\','\\')
 
-  if len(buffer)<=1024:
+  if 0<len(buffer)<=1024:
     os.write(1,buffer)
