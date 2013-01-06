@@ -114,5 +114,5 @@ while 1:
   buffer = buffer.replace("\\'","'")
   buffer = buffer.replace('\\\\','\\')
 
-  if 0<len(buffer)<=1024:
+  if len(buffer)<=1024:
     os.write(1,buffer)
