@@ -37,7 +37,7 @@ while 1:
     if dst in os.listdir('dstkey/'):
 
       m      = buffer.split(':',1)[1]
-      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,112-len(m)%112-1)]).tostring()
+      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,111-len(m)%111)]).tostring()
       n      = nacltaia.taia_now()
       n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
       pk     = binascii.unhexlify(open('dstkey/'+dst,'rb').read(64))
@@ -51,7 +51,7 @@ while 1:
     if dst in os.listdir('chnkey/'):
 
       m      = buffer.split(':',1)[1]
-      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,112-len(m)%112-1)]).tostring()
+      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,111-len(m)%111)]).tostring()
       n      = nacltaia.taia_now()
       n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
       k      = binascii.unhexlify(open('chnkey/'+dst,'rb').read(64))
