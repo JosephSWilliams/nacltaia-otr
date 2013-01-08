@@ -40,11 +40,12 @@ while 1:
       try:
 
         c = base91a.decode(buffer.split(':',2)[2])
+
+        if len(c) < 24 + 16:
+          continue
+
         n = c[:24]
         c = c[24:]
-
-        if len(n) + len(c) < 24 + 16:
-          continue
 
         pk = binascii.unhexlify(open('dstkey/'+src,'rb').read(64))
         m  = nacltaia.crypto_box_open(c,n,pk,sk).split('\n',1)[0]
@@ -80,11 +81,12 @@ while 1:
       try:
 
         c = base91a.decode(buffer.split(':',2)[2])
+
+        if len(c) < 24 + 16:
+          continue
+
         n = c[:24]
         c = c[24:]
-
-        if len(n) + len(c) < 24 + 16:
-          continue
 
         k = binascii.unhexlify(open('chnkey/'+dst,'rb').read(64))
         m = nacltaia.crypto_secretbox_open(c,n,k).split('\n',1)[0]
