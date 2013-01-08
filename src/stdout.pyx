@@ -8,16 +8,15 @@ import codecs
 import pwd
 import re
 
-taias    = dict()
-RE       = 'a-zA-Z0-9^(\)-_{\}[\]|'
-taia_now = binascii.hexlify(nacltaia.taia_now())
-sk       = binascii.unhexlify(open('crypto/seckey','rb').read(64))
-
 uid = pwd.getpwnam('nacltaia-otr')[2]
 os.chdir('crypto/')
 os.chroot(os.getcwd())
 os.setuid(uid)
 del uid
+
+taias    = dict()
+RE       = 'a-zA-Z0-9^(\)-_{\}[\]|'
+taia_now = binascii.hexlify(nacltaia.taia_now())
 
 while 1:
 
@@ -48,6 +47,7 @@ while 1:
         c = c[24:]
 
         pk = binascii.unhexlify(open('dstkey/'+src,'rb').read(64))
+        sk = binascii.unhexlify(open('seckey','rb').read(64))
         m  = nacltaia.crypto_box_open(c,n,pk,sk).split('\n',1)[0]
 
         if m == 0:

@@ -8,14 +8,13 @@ import array
 import pwd
 import re
 
-RE = 'a-zA-Z0-9^(\)-_{\}[\]|'
-sk = binascii.unhexlify(open('crypto/seckey','rb').read(64))
-
 uid = pwd.getpwnam('nacltaia-otr')[2]
 os.chdir('crypto/')
 os.chroot(os.getcwd())
 os.setuid(uid)
 del uid
+
+RE = 'a-zA-Z0-9^(\)-_{\}[\]|'
 
 while 1:
 
@@ -41,6 +40,7 @@ while 1:
       n      = nacltaia.taia_now()
       n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
       pk     = binascii.unhexlify(open('dstkey/'+dst,'rb').read(64))
+      sk     = binascii.unhexlify(open('seckey','rb').read(64))
       c      = nacltaia.crypto_box(m,n,pk,sk)
       buffer = buffer.split(':',1)[0] + ':' + base91a.encode(n+c)
 
