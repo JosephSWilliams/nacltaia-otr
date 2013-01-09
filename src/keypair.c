@@ -14,6 +14,6 @@ crypto_box_keypair(pk,sk);
 	for (i=0;i<32;++i) printf("%02x",sk[i]);
 	  printf("\n");
 }
-
+/*
 void randombytes(char *bytes) {
-	           read(0,bytes,32);}
+	           read(0,bytes,32);}*/

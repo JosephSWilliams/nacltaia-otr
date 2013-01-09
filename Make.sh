@@ -15,7 +15,8 @@ elif [ -e '/usr/local/include/python2.6/Python.h'       ] &&
 
 mkdir -p build || exit 1
 
-gcc -O3 src/keypair.c -o keypair -l nacl || exit 1
+gcc -O3 src/keypair.c -o keypair -l nacl /usr/lib/randombytes.o || exit 1
+
 gcc -O3 -fPIC src/nacltaia.c -shared -I $HEADERS -o nacltaia.so -l python2.6 -l nacl -l tai || exit 1
 
 if ! $(which cython 2>&1 >/dev/null); then

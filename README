@@ -87,7 +87,7 @@ intel install (x86_64):
   mkdir -p crypto/dstkey/
   mkdir -p crypto/chnkey/
 
-  ./keypair < /dev/urandom
+  ./keypair
 
   printf $pubkey > crypto/pubkey
   printf $seckey > crypto/seckey
@@ -106,7 +106,7 @@ install:
   mkdir -p crypto/dstkey/
   mkdir -p crypto/chnkey/
 
-  ./keypair < /dev/urandom
+  ./keypair
 
   printf $pubkey > crypto/pubkey
   printf $seckey > crypto/seckey

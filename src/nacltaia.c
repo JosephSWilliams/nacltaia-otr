@@ -22,7 +22,7 @@ PyObject *pytaia_now(PyObject *self){
 
   return ret;
 }
-
+/*
 PyObject *pycrypto_box_keypair(PyObject *self){
 
     PyObject *pypk, *pysk, *pyret;
@@ -50,7 +50,7 @@ PyObject *pycrypto_box_keypair(PyObject *self){
     PyTuple_SET_ITEM(pyret, 1, pysk);
 
     return pyret;
-}
+}*/
 
 PyObject *pycrypto_box(PyObject *self, PyObject *args, PyObject *kw){
 
@@ -281,7 +281,7 @@ static PyMethodDef Module_methods[] = {
   {"taia_now",             pytaia_now,             METH_VARARGS},
   {"crypto_box",           pycrypto_box,           METH_VARARGS},
   {"crypto_box_open",      pycrypto_box_open,      METH_VARARGS},
-  {"crypto_box_keypair",   pycrypto_box_keypair,   METH_VARARGS},
+//  {"crypto_box_keypair",   pycrypto_box_keypair,   METH_VARARGS},
   {"crypto_secretbox",     pycrypto_secretbox,     METH_VARARGS},
   {"crypto_secretbox_open",pycrypto_secretbox_open,METH_VARARGS},
   {NULL, NULL}
@@ -302,10 +302,10 @@ void initcrypto_box(){
 void initcrypto_box_open(){
   (void) Py_InitModule("crypto_box_open", Module_methods);
 }
-
+/*
 void initcrypto_box_keypair(){
   (void) Py_InitModule("crypto_box_keypair", Module_methods);
-}
+}*/
 
 void initcrypto_secretbox(){
   (void) Py_InitModule("crypto_secretbox", Module_methods);
@@ -314,9 +314,9 @@ void initcrypto_secretbox(){
 void initcrypto_secretbox_open(){
   (void) Py_InitModule("crypto_secretbox_open", Module_methods);
 }
-
-void randombytes(char *bytes) { /* hack randombytes */
+/*
+void randombytes(char *bytes) {
   int fd;
   fd = open("/dev/urandom",0);
 	          read(fd,bytes,32);
-                    close(fd);}
+                    close(fd);}*/
