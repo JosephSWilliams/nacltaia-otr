@@ -98,6 +98,8 @@ intel install (x86_64):
   printf $pubkey > crypto/pubkey
   printf $seckey > crypto/seckey
 
+  chown nacltaia-otr crypto/ -R
+
 install:
 
   useradd nacltaia-otr
@@ -113,12 +115,12 @@ install:
   mkdir -p crypto/dstkey/
   mkdir -p crypto/chnkey/
 
-  chown nacltaia-otr crypto/ -R
-
   ./keypair
 
   printf $pubkey > crypto/pubkey
   printf $seckey > crypto/seckey
+
+  chown nacltaia-otr crypto/ -R
 
 adding crypto:
   # [security] $nick should be lowercase
