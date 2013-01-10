@@ -1,7 +1,10 @@
+crypto_box_keypair
+newsessiongen
 nacltaia.so
 base91a.py
 base91a.so
 keypair
+seckey
 crypto
 stdout
 stdin

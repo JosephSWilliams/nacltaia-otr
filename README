@@ -52,6 +52,11 @@ nacltaia-otr:
   machine. nacltaia-otr automatically purges all binary
   encoding before it makes it to the IRC client.
 
+  nacltaia-otr provides perfect forward secrecy through
+  the use of session keys. this maintains that even if
+  your private key is compromised, no previous message
+  is can be decrypted.
+
 depends:
   python(>=2.6), python-dev(>=2.6), nacl, libtai,
   gcc, sh
@@ -103,8 +108,11 @@ install:
   sed 's/\.6/.7/g' Make.sh | sh
 
   mkdir -p crypto/
+  mkdir -p crypto/tmpkey/
   mkdir -p crypto/dstkey/
   mkdir -p crypto/chnkey/
+
+  chown nacltaia-otr crypto/ -R
 
   ./keypair
 
@@ -120,8 +128,12 @@ adding crypto:
   # with no hashtag. $nick should be
   # lowercase
 
+  ./seckey
+
   printf $pubkey > crypto/dstkey/$nick
   printf $seckey > crypto/chnkey/$channel
+
+  ./newsessiongen crypto/
 
 urcd:
   # from cwd of urcd
