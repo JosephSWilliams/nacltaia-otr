@@ -55,7 +55,7 @@ nacltaia-otr:
   nacltaia-otr provides perfect forward secrecy through
   the use of session keys. this maintains that even if
   your private key is compromised, no previous message
-  is can be decrypted.
+  can be decrypted.
 
 depends:
   python(>=2.6), python-dev(>=2.6), nacl, libtai,
@@ -66,7 +66,8 @@ recommends:
 
 todo:
   create base91a.c, fixes for intel (x86_64),
-  fixes for pfs announcement
+  fixes for pfs announcement and multiserver
+  shared keys.
 
 intel install (x86_64):
   # will complain about PIC for libtai.a

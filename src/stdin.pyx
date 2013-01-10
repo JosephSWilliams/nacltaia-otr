@@ -5,9 +5,7 @@ from random import choice as rC
 import binascii
 import nacltaia
 import base91a
-#import thread
 import array
-#import time
 import pwd
 import re
 
@@ -18,20 +16,6 @@ os.setuid(uid)
 del uid
 
 RE = 'a-zA-Z0-9^(\)-_{\}[\]|'
-
-#def announce():
-#  while 1:
-#    for dst in os.listdir('dstkey/'):
-#      time.sleep(rR(32,128))
-#      m   = open('tmpkey/'+dst+'/pk','rb').read(32)
-#      m  += array.array('B',[rR(0,256) for i in range(0,80)]).tostring()
-#      n   = array.array('B',[0 for i in range(0,16)]).tostring()
-#      n  += nacltaia.taia_now()[:8]
-#      pk  = binascii.unhexlify(open('dstkey/'+dst,'rb').read(64))
-#      sk  = binascii.unhexlify(open('seckey','rb').read(64))
-#      c   = nacltaia.crypto_box(m,n,pk,sk)
-#      os.write(1,'PRIVMSG '+dst+' :'+base91a.encode(n+c)+'\n')
-#thread.start_new(announce,())
 
 while 1:
 
@@ -59,6 +43,7 @@ while 1:
       pk     = open('tmpkey/'+dst+'/tk','rb').read(32)
       sk     = open('tmpkey/'+dst+'/sk','rb').read(32)
       c      = nacltaia.crypto_box(m,n,pk,sk)
+      c      = str() if c == 0 else c
       c      = open('tmpkey/'+dst+'/pk','rb').read(32) + c
       pk     = binascii.unhexlify(open('dstkey/'+dst,'rb').read(64))
       sk     = binascii.unhexlify(open('seckey','rb').read(64))
@@ -77,6 +62,7 @@ while 1:
       n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
       k      = binascii.unhexlify(open('chnkey/'+dst,'rb').read(64))
       c      = nacltaia.crypto_secretbox(m,n,k)
+      c      = str() if c == 0 else c
       buffer = buffer.split(':',1)[0] + ':' + base91a.encode(n+c)
 
   os.write(1,buffer+'\n')
