@@ -65,7 +65,8 @@ recommends:
   cython(>=0.17.3), ucspi-tcp, urcd
 
 todo:
-  create base91a.c, fixes for intel (x86_64)
+  create base91a.c, fixes for intel (x86_64),
+  fixes for pfs announcement
 
 intel install (x86_64):
   # will complain about PIC for libtai.a
@@ -122,6 +123,9 @@ install:
 adding crypto:
   # [security] $nick should be lowercase
 
+  setuidgid nacltaia-otr mkdir -p crypto/dstkey/$nick
+  setuidgid nacltaia-otr mkdir -p crypto/tmpkey/$nick
+
   printf $pubkey > crypto/dstkey/$nick
 
   # [security] $channel should be lowercase
@@ -130,10 +134,24 @@ adding crypto:
 
   ./seckey
 
+  setuidgid nacltaia-otr mkdir -p crypto/dstkey/$nick
+  setuidgid nacltaia-otr mkdir -p crypto/tmpkey/$nick
+
   printf $pubkey > crypto/dstkey/$nick
   printf $seckey > crypto/chnkey/$channel
 
+perfect forward secrecy:
+
+  # you should generate new session keys in a timely
+  # manner. crypto_box_keypair should be in the cwd.
+
   ./newsessiongen crypto/
+
+  # you can daemonize this if you prefer. newsessiongen
+  # accepts a second argument for intervals. an example
+  # of generating new session keys every 8 minutes.
+
+  ./newsession crypto/ 512
 
 urcd:
   # from cwd of urcd
