@@ -36,37 +36,57 @@ while 1:
     src = buffer.split(':',2)[1].split('!',1)[0].lower()
 
     if src in os.listdir('dstkey/'):
+
+      if not src in taias.keys():
+        os.mkdir('tmpkey/'+src) if not os.path.exists('tmpkey/'+src) else 0
+        open('tmpkey/'+src+'/sk','ab').write(str()) if not os.path.exists('tmpkey/'+src+'/sk') else 0
+        open('tmpkey/'+src+'/tk','ab').write(str()) if not os.path.exists('tmpkey/'+src+'/tk') else 0
+
       try:
-
         c = base91a.decode(buffer.split(':',2)[2])
-
-        if len(c) < 24 + 16:
-          continue
-
-        n = c[:24]
-        c = c[24:]
-
-        pk = binascii.unhexlify(open('dstkey/'+src,'rb').read(64))
-        sk = binascii.unhexlify(open('seckey','rb').read(64))
-        m  = nacltaia.crypto_box_open(c,n,pk,sk).split('\n',1)[0]
-
-        if m == 0:
-          continue
-
-        taia = binascii.hexlify(n[:16])
-
-        if not src in taias.keys():
-          taias[src] = taia_now
-          taia_now   = binascii.hexlify(nacltaia.taia_now())
-
-        if long(taia,16) <= long(taias[src],16):
-          continue
-
-        taias[src] = taia
-        buffer     = ':' + buffer.split(':',2)[1] + ':' + m
-
       except:
         continue
+
+      n  = c[:24]
+      c  = c[24:]
+      pk = binascii.unhexlify(open('dstkey/'+src,'rb').read(64))
+      sk = binascii.unhexlify(open('seckey','rb').read(64))
+      c  = nacltaia.crypto_box_open(c,n,pk,sk)
+
+      if c == 0:
+        continue
+
+      m    = 0
+      taia = binascii.hexlify(n[:16])
+
+      if not long(taia,16) and len(c) > 32:
+        taia = binascii.hexlify(n[16:]) + '0000000000000000'
+        pk   = c[:32]
+
+      elif len(c) >= 32 + 16:
+        pk = c[:32]
+        sk = open('tmpkey/'+src+'/sk','rb').read(32)
+        m  = nacltaia.crypto_box_open(c[32:],n,pk,sk)
+
+      else:
+        continue
+
+      if not src in taias.keys():
+        taias[src] = taia_now
+        taia_now   = binascii.hexlify(nacltaia.taia_now())
+
+      if long(taia,16) <= long(taias[src],16):
+        continue
+
+      open('tmpkey/'+src+'/tk','wb').write(pk)
+
+      taias[src] = taia
+
+      if m == 0:
+        continue
+
+      m      = m.split('\n',1)[0]
+      buffer = ':' + buffer.split(':',2)[1] + ':' + m
 
   elif re.search('^:['+RE+']+!['+RE+']+@['+RE+'.]+ ((PRIVMSG)|(NOTICE)|(TOPIC)) #['+RE+']+ :.*$',buffer.upper()):
 
@@ -79,35 +99,30 @@ while 1:
         continue
 
       try:
-
         c = base91a.decode(buffer.split(':',2)[2])
-
-        if len(c) < 24 + 16:
-          continue
-
-        n = c[:24]
-        c = c[24:]
-
-        k = binascii.unhexlify(open('chnkey/'+dst,'rb').read(64))
-        m = nacltaia.crypto_secretbox_open(c,n,k).split('\n',1)[0]
-
-        if m == 0:
-          continue
-
-        taia = binascii.hexlify(n[:16])
-
-        if not src in taias.keys():
-          taias[src] = taia_now
-          taia_now   = binascii.hexlify(nacltaia.taia_now())
-
-        if long(taia,16) <= long(taias[src],16):
-          continue
-
-        taias[src] = taia
-        buffer     = ':' + buffer.split(':',2)[1] + ':' + m
-
       except:
         continue
+
+      n = c[:24]
+      c = c[24:]
+      k = binascii.unhexlify(open('chnkey/'+dst,'rb').read(64))
+      m = nacltaia.crypto_secretbox_open(c,n,k)
+
+      if m == 0:
+        continue
+
+      taia = binascii.hexlify(n[:16])
+
+      if not src in taias.keys():
+        taias[src] = taia_now
+        taia_now   = binascii.hexlify(nacltaia.taia_now())
+
+      if long(taia,16) <= long(taias[src],16):
+        continue
+
+      taias[src] = taia
+      m          = m.split('\n',1)[0]
+      buffer     = ':' + buffer.split(':',2)[1] + ':' + m
 
   buffer = codecs.ascii_encode(unicodedata.normalize('NFKD',unicode(buffer,'utf-8','replace')),'ignore')[0]
   buffer = re.sub('[\x02\x0f]','',buffer)

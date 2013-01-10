@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 import sys, os ; sys.path.append(os.getcwd())
 from random import randrange as rR
+from random import choice as rC
 import binascii
 import nacltaia
 import base91a
+#import thread
 import array
+#import time
 import pwd
 import re
 
@@ -15,6 +18,20 @@ os.setuid(uid)
 del uid
 
 RE = 'a-zA-Z0-9^(\)-_{\}[\]|'
+
+#def announce():
+#  while 1:
+#    for dst in os.listdir('dstkey/'):
+#      time.sleep(rR(32,128))
+#      m   = open('tmpkey/'+dst+'/pk','rb').read(32)
+#      m  += array.array('B',[rR(0,256) for i in range(0,80)]).tostring()
+#      n   = array.array('B',[0 for i in range(0,16)]).tostring()
+#      n  += nacltaia.taia_now()[:8]
+#      pk  = binascii.unhexlify(open('dstkey/'+dst,'rb').read(64))
+#      sk  = binascii.unhexlify(open('seckey','rb').read(64))
+#      c   = nacltaia.crypto_box(m,n,pk,sk)
+#      os.write(1,'PRIVMSG '+dst+' :'+base91a.encode(n+c)+'\n')
+#thread.start_new(announce,())
 
 while 1:
 
@@ -36,12 +53,16 @@ while 1:
     if dst in os.listdir('dstkey/'):
 
       m      = buffer.split(':',1)[1]
-      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,111-len(m)%111)]).tostring()
+      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,64-len(m)%64-1)]).tostring()
       n      = nacltaia.taia_now()
       n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
+      pk     = open('tmpkey/'+dst+'/tk','rb').read(32)
+      sk     = open('tmpkey/'+dst+'/sk','rb').read(32)
+      c      = nacltaia.crypto_box(m,n,pk,sk)
+      c      = open('tmpkey/'+dst+'/pk','rb').read(32) + c
       pk     = binascii.unhexlify(open('dstkey/'+dst,'rb').read(64))
       sk     = binascii.unhexlify(open('seckey','rb').read(64))
-      c      = nacltaia.crypto_box(m,n,pk,sk)
+      c      = nacltaia.crypto_box(c,n,pk,sk)
       buffer = buffer.split(':',1)[0] + ':' + base91a.encode(n+c)
 
   elif re.search('^((PRIVMSG)|(NOTICE)|(TOPIC)) #['+RE+']+ :.*$',buffer.upper()):
