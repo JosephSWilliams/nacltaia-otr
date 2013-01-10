@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import sys, os ; sys.path.append(os.getcwd())
 from random import randrange as rR
-from random import choice as rC
 import binascii
 import nacltaia
 import base91a

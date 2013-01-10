@@ -37,11 +37,6 @@ while 1:
 
     if src in os.listdir('dstkey/'):
 
-      if not src in taias.keys():
-        os.mkdir('tmpkey/'+src) if not os.path.exists('tmpkey/'+src) else 0
-        open('tmpkey/'+src+'/sk','ab').write(str()) if not os.path.exists('tmpkey/'+src+'/sk') else 0
-        open('tmpkey/'+src+'/tk','ab').write(str()) if not os.path.exists('tmpkey/'+src+'/tk') else 0
-
       try:
         c = base91a.decode(buffer.split(':',2)[2])
       except:
