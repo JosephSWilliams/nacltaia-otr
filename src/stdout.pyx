@@ -31,6 +31,9 @@ while 1:
     if byte != '\r':
       buffer+=byte
 
+  if re.search('^:cryptoserv!nacltaia-otr@service ',buffer.lower()):
+    continue
+
   if re.search('^:['+RE+']+!['+RE+']+@['+RE+'.]+ ((PRIVMSG)|(NOTICE)|(TOPIC)) ['+RE+']+ :.*$',buffer.upper()):
 
     src = buffer.split(':',2)[1].split('!',1)[0].lower()
@@ -78,10 +81,11 @@ while 1:
       taias[src] = taia
 
       if m == 0:
-        continue
+        buffer = ':CryptoServ!nacltaia-otr@service NOTICE ' + buffer.split(' ')[2] + ' :unable to decrypt message from ' + src
 
-      m      = m.split('\n',1)[0]
-      buffer = ':' + buffer.split(':',2)[1] + ':' + m
+      else:
+        m      = m.split('\n',1)[0]
+        buffer = ':' + buffer.split(':',2)[1] + ':' + m
 
   elif re.search('^:['+RE+']+!['+RE+']+@['+RE+'.]+ ((PRIVMSG)|(NOTICE)|(TOPIC)) #['+RE+']+ :.*$',buffer.upper()):
 
