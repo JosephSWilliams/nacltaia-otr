@@ -15,7 +15,7 @@ os.setuid(uid)
 del uid
 
 taias    = dict()
-RE       = 'a-zA-Z0-9^(\)-_{\}[\]|'
+RE       = 'a-zA-Z0-9^(\)\-_{\}[\]|'
 taia_now = binascii.hexlify(nacltaia.taia_now())
 
 while 1:

@@ -14,7 +14,7 @@ os.chroot(os.getcwd())
 os.setuid(uid)
 del uid
 
-RE = 'a-zA-Z0-9^(\)-_{\}[\]|'
+RE = 'a-zA-Z0-9^(\)\-_{\}[\]|'
 
 while 1:
 
