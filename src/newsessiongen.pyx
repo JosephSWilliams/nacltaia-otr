@@ -16,8 +16,6 @@ try:
   os.chroot(os.getcwd())
   os.setuid(uid)
   del uid
-  t=int(argv[2]) if len(argv)>2 else 1
-  sleep(t)
   for dst in os.listdir('dstkey/'):
     os.mkdir('tmpkey/'+dst) if not os.path.exists('tmpkey/'+dst) else 0
     open('tmpkey/'+dst+'/tk','ab').write(str())
@@ -30,5 +28,7 @@ try:
     open('tmpkey/'+dst+'/pk','wb').write(pk)
     open('tmpkey/'+dst+'/sk','wb').write(sk)
   p.stdin.write(str())
+  t=int(argv[2]) if len(argv)>2 else 1
+  sleep(t)
 except:
   exit(USAGE)

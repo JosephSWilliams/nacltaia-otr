@@ -162,10 +162,8 @@ urcd:
   ln -s /path/to/nacltaia-otr/stdin `pwd`/stdin
   ln -s /path/to/nacltaia-otr/stdout `pwd`/stdout
   ln -s /path/to/nacltaia-otr/crypto `pwd`/crypto
-  ln -s /path/to/nacltaia-otr/nacltaia.so `pwd`/nacltaia.so
-
-  # base91a.py for non-cython
   ln -s /path/to/nacltaia-otr/base91a.so `pwd`/base91a.so
+  ln -s /path/to/nacltaia-otr/nacltaia.so `pwd`/nacltaia.so
 
 ucspi-tcp:
   tcpserver 127.0.0.1 6667 tcpclient irc.crypto.net 6667 ./stdio &
