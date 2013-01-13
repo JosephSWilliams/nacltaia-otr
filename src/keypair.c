@@ -12,8 +12,7 @@ crypto_box_keypair(pk,sk);
 
 	printf("SECKEY: ");
 	for (i=0;i<32;++i) printf("%02x",sk[i]);
-	  printf("\n");
-}
+	  printf("\n");}
 /*
 void randombytes(char *bytes) {
 	           read(0,bytes,32);}*/
