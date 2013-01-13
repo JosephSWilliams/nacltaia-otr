@@ -16,8 +16,6 @@ PyObject *pyencode(PyObject *self, PyObject *args, PyObject *kw){
 
   if (!out) return PyErr_NoMemory();
 
-  bzero(out,dlen*2);
-
   int l = 0; int i = 0; int b = 0; int n = 0; int v = 0;
 
   for(i=0;i<dlen;++i) {

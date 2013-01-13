@@ -154,7 +154,9 @@ perfect forward secrecy:
   # accepts a second argument for intervals. an example
   # of generating new session keys every 8 minutes.
 
-  ./newsession crypto/ 512
+  while true ; do
+    ./newsession crypto/ 512
+  done
 
 urcd:
   # from cwd of urcd
