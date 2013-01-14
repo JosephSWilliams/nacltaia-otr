@@ -39,8 +39,6 @@ if ! $(which cython 2>&1 >/dev/null); then
   cp src/newsessiongen.pyx newsessiongen || exit 1
   chmod +x newsessiongen                 || exit 1
 
-  cp src/base91a.pyx base91a.py || exit 1
-
   rm -rf build || exit 1
 
   exit 0
