@@ -60,6 +60,8 @@ PyObject *pydecode(PyObject *self, PyObject *args, PyObject *kw){
 
   for(i=0;i<dlen;++i){
     c = data[i] - 33;
+    if ((c<0) | (c>90))
+      return Py_BuildValue("s", "");
     if (v<0)
       v = c;
     else {
