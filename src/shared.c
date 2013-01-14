@@ -1,6 +1,9 @@
 #include "crypto_scalarmult_curve25519.h"
 #include "crypto_box_curve25519xsalsa20poly1305.h"
 #include "crypto_sign_edwards25519sha512batch.h"
+#include "crypto_onetimeauth_poly1305.h"
+#include "crypto_core_hsalsa20.h"
+#include "crypto_core_salsa20.h"
 
 #define EXPORT __attribute__ ((visibility("default")))
 
@@ -23,10 +26,18 @@ EXPORT int export_crypto_scalarmult_curve25519_base(unsigned char * a,const unsi
 EXPORT const int export_crypto_scalarmult_curve25519_BYTES = crypto_scalarmult_curve25519_BYTES;
 EXPORT const int export_crypto_scalarmult_curve25519_SCALARBYTES = crypto_scalarmult_curve25519_SCALARBYTES;
 
-EXPORT int export_crypto_sign_edwards25519sha512batch_(unsigned char * a,unsigned long long * b,const unsigned char * c,unsigned long long d,const unsigned char * e) { return crypto_sign_edwards25519sha512batch(a,b,c,d,e); }
+EXPORT int export_crypto_sign_edwards25519sha512batch(unsigned char * a,unsigned long long * b,const unsigned char * c,unsigned long long d,const unsigned char * e) { return crypto_sign_edwards25519sha512batch(a,b,c,d,e); }
 EXPORT int export_crypto_sign_edwards25519sha512batch_open(unsigned char * a,unsigned long long * b,const unsigned char * c,unsigned long long d,const unsigned char * e) { return crypto_sign_edwards25519sha512batch_open(a,b,c,d,e); }
 EXPORT int export_crypto_sign_edwards25519sha512batch_keypair(unsigned char * a,unsigned char * b,unsigned char * c) { return crypto_sign_edwards25519sha512batch_keypair(a,b,c); }
 EXPORT const int export_crypto_sign_edwards25519sha512batch_BYTES = crypto_sign_edwards25519sha512batch_BYTES;
 EXPORT const int export_crypto_sign_edwards25519sha512batch_PUBLICKEYBYTES = crypto_sign_edwards25519sha512batch_PUBLICKEYBYTES;
 EXPORT const int export_crypto_sign_edwards25519sha512batch_SECRETKEYBYTES = crypto_sign_edwards25519sha512batch_SECRETKEYBYTES;
 EXPORT const int export_crypto_sign_edwards25519sha512batch_KEYPAIRRANDOMBYTES = crypto_sign_edwards25519sha512batch_KEYPAIRRANDOMBYTES;
+
+EXPORT int export_crypto_onetimeauth_poly1305(unsigned char *a,const unsigned char *b,unsigned long long c,const unsigned char *d) { return crypto_onetimeauth_poly1305(a,b,c,d); }
+EXPORT int export_crypto_onetimeauth_poly1305_verify(const unsigned char *a,const unsigned char *b,unsigned long long c,const unsigned char *d) { return crypto_onetimeauth_poly1305_verify(a,b,c,d); }
+
+EXPORT int export_crypto_core_hsalsa20(unsigned char *a,const unsigned char *b,const unsigned char *c,const unsigned char *d) { return crypto_core_hsalsa20(a,b,c,d); }
+
+EXPORT int export_crypto_core_salsa20(unsigned char *a,const unsigned char *b,const unsigned char *c,const unsigned char *d) { return crypto_core_salsa20(a,b,c,d); }
+

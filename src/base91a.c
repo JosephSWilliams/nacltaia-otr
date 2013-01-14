@@ -19,7 +19,7 @@ PyObject *pyencode(PyObject *self, PyObject *args, PyObject *kw){
   int l = 0; int i = 0; int b = 0; int n = 0; int v = 0;
 
   for(i=0;i<dlen;++i){
-    b |= (data[i] << n);
+    b |= data[i] << n;
     n += 8;
     if (n>13){
       v = b & 8191;
@@ -32,7 +32,7 @@ PyObject *pyencode(PyObject *self, PyObject *args, PyObject *kw){
         n -= 14;}
       out[l] = v % 91 + 33; ++l;
       out[l] = v / 91 + 33; ++l;}}
-  if (n) {
+  if (n){
     out[l] = b % 91 + 33; ++l;
     if ((n>7) | (b>90)){
       out[l] = b / 91 + 33; ++l;}}
