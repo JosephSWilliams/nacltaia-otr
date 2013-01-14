@@ -2,14 +2,14 @@
 
 unset HEADERS
 
-  if [ -e '/usr/include/python2.6/Python.h'       ] &&
+if   [ -e '/usr/include/python2.6/Python.h'       ] &&
      [ -e '/usr/include/python2.6/structmember.h' ] ;then
        HEADERS='/usr/include/python2.6'
 
 elif [ -e '/usr/local/include/python2.6/Python.h'       ] &&
      [ -e '/usr/local/include/python2.6/structmember.h' ] ;then
        HEADERS='/usr/local/include/python2.6'
-  fi
+fi
 
 [ -z $HEADERS ] && exit 1
 

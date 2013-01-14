@@ -18,7 +18,7 @@ PyObject *pyencode(PyObject *self, PyObject *args, PyObject *kw){
 
   int l = 0; int i = 0; int b = 0; int n = 0; int v = 0;
 
-  for(i=0;i<dlen;++i) {
+  for(i=0;i<dlen;++i){
     b |= (data[i] << n);
     n += 8;
     if (n>13){
@@ -60,8 +60,9 @@ PyObject *pydecode(PyObject *self, PyObject *args, PyObject *kw){
 
   for(i=0;i<dlen;++i){
     c = data[i] - 33;
-    if ((c<0) | (c>90))
-      return Py_BuildValue("s", "");
+    if ((c<0) | (c>90)){
+      PyMem_Free(out);
+      return Py_BuildValue("s", "");}
     if (v<0)
       v = c;
     else {
