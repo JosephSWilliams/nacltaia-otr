@@ -22,7 +22,6 @@ PyObject *pytaia_now(PyObject *self){
 
 /*
 PyObject *pycrypto_box_keypair(PyObject *self){
-
   PyObject *pypk, *pysk, *pyret;
   unsigned char pk[crypto_box_PUBLICKEYBYTES];
   unsigned char sk[crypto_box_SECRETKEYBYTES];
@@ -30,24 +29,26 @@ PyObject *pycrypto_box_keypair(PyObject *self){
   crypto_box_keypair(pk, sk);
 
   pypk = PyBytes_FromStringAndSize((char *)pk, crypto_box_PUBLICKEYBYTES);
-  if (!pypk) return (PyObject *)0;
+
+  if (!pypk)
+    return (PyObject *)0;
 
   pysk = PyBytes_FromStringAndSize((char *)sk, crypto_box_SECRETKEYBYTES);
-  if (!pysk) {
+
+  if (!pysk){
     Py_DECREF(pypk);
-    return (PyObject *)0;
-  }
+    return (PyObject *)0;}
+
   pyret = PyTuple_New(2);
+
   if (!pyret){
     Py_DECREF(pypk);
     Py_DECREF(pysk);
-    return (PyObject *)0;
-  }
+    return (PyObject *)0;}
+
   PyTuple_SET_ITEM(pyret, 0, pypk);
   PyTuple_SET_ITEM(pyret, 1, pysk);
-
-  return pyret;
-}*/
+  return pyret;}*/
 
 PyObject *pycrypto_box(PyObject *self, PyObject *args, PyObject *kw){
   char *m, *n, *pk, *sk;
@@ -240,8 +241,8 @@ void initcrypto_box_open(){
   (void) Py_InitModule("crypto_box_open", Module_methods);}
 /*
 void initcrypto_box_keypair(){
-  (void) Py_InitModule("crypto_box_keypair", Module_methods);}
-*/
+  (void) Py_InitModule("crypto_box_keypair", Module_methods);}*/
+
 void initcrypto_secretbox(){
   (void) Py_InitModule("crypto_secretbox", Module_methods);}
 

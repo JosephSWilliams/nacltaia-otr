@@ -31,7 +31,7 @@ while 1:
     if byte != '\r':
       buffer+=byte
 
-  if re.search('^:cryptoserv!nacltaia-otr@service ',buffer.lower()):
+  if re.search('^:cryptoserv!.+@.+ ',buffer.lower()):
     continue
 
   if re.search('^:['+RE+']+!['+RE+']+@['+RE+'.]+ ((PRIVMSG)|(NOTICE)|(TOPIC)) ['+RE+']+ :.*$',buffer.upper()):
