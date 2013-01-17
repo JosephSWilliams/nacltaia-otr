@@ -35,7 +35,7 @@ while 1:
 
     if dst in os.listdir('dstkey/'):
 
-      m      = re.split(' +:?',buffer,3)[2]
+      m      = re.split(' +:?',buffer,2)[2]
       m     += '\n' + array.array('B',[rR(0,256) for i in range(0,64-len(m)%64-1)]).tostring()
       n      = nacltaia.taia_now()
       n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
@@ -60,7 +60,7 @@ while 1:
 
     if dst in os.listdir('chnkey/'):
 
-      m      = re.split(' +:?',buffer,3)[2]
+      m      = re.split(' +:?',buffer,2)[2]
       m     += '\n' + array.array('B',[rR(0,256) for i in range(0,111-len(m)%111)]).tostring()
       n      = nacltaia.taia_now()
       n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
