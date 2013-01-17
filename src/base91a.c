@@ -26,7 +26,7 @@ PyObject *pyencode(PyObject *self, PyObject *args, PyObject *kw){
       if (v>88){
         b >>= 13;
         n -= 13;}
-      else { 
+      else {
         v = b & 16383;
         b >>= 14;
         n -= 14;}

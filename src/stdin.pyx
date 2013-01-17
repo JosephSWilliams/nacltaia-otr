@@ -48,11 +48,11 @@ while 1:
       sk     = binascii.unhexlify(open('seckey','rb').read(64))
       c      = nacltaia.crypto_box(c,n,pk,sk)
 
-      buffer  = re.split(' +',buffer,1)[0].upper() \
-              + ' ' \
-              + re.split(' +',buffer,2)[1] \
-              + ' :' \
-              + base91a.encode(n+c)
+      buffer = re.split(' +',buffer,1)[0].upper() \
+             + ' ' \
+             + re.split(' +',buffer,2)[1] \
+             + ' :' \
+             + base91a.encode(n+c)
 
   elif re.search('^((PRIVMSG)|(NOTICE)|(TOPIC)) +#['+RE+']+ +:?.*$',buffer.upper()):
 
@@ -68,10 +68,10 @@ while 1:
       c      = nacltaia.crypto_secretbox(m,n,k)
       c      = str() if c == 0 else c
 
-      buffer  = re.split(' +',buffer,1)[0].upper() \
-              + ' ' \
-              + re.split(' +',buffer,2)[1] \
-              + ' :' \
-              + base91a.encode(n+c)
+      buffer = re.split(' +',buffer,1)[0].upper() \
+             + ' ' \
+             + re.split(' +',buffer,2)[1] \
+             + ' :' \
+             + base91a.encode(n+c)
 
   os.write(1,buffer+'\n')
