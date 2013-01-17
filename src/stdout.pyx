@@ -86,13 +86,13 @@ while 1:
         continue
 
       else:
-        buffer  = re.split(' +',buffer,1)[0] \
-                + ' ' \
-                + re.split(' +',buffer,2)[1].upper() \
-                + ' ' \
-                + re.split(' +',buffer,3)[2] \
-                + ' :' \
-                + m.split('\n',1)[0]
+        buffer = re.split(' +',buffer,1)[0] \
+               + ' ' \
+               + re.split(' +',buffer,2)[1].upper() \
+               + ' ' \
+               + re.split(' +',buffer,3)[2] \
+               + ' :' \
+               + m.split('\n',1)[0]
 
   elif re.search('^:['+RE+']+!['+RE+']+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +#['+RE+']+ +:?.*$',buffer.upper()):
 
@@ -119,22 +119,27 @@ while 1:
 
       taia = binascii.hexlify(n[:16])
 
-      if not src in taias.keys():
-        taias[src] = taia_now
-        taia_now   = binascii.hexlify(nacltaia.taia_now())
+      if not (dst+'/'+src) in taias.keys():
+        taias[dst+'/'+src] = taia_now
+        taia_now = binascii.hexlify(nacltaia.taia_now())
 
-      if long(taia,16) <= long(taias[src],16):
+      if long(taia,16) <= long(taias[dst+'/'+src],16):
         continue
 
-      taias[src] = taia
+      taia_now = binascii.hexlify(nacltaia.taia_now())
 
-      buffer  = re.split(' +',buffer,1)[0] \
-              + ' ' \
-              + re.split(' +',buffer,2)[1].upper() \
-              + ' ' \
-              + re.split(' +',buffer,3)[2] \
-              + ' :' \
-              + m.split('\n',1)[0]
+      if long(taia_now,16) <= long(taias[dst+'/'+src],16):
+        continue
+
+      taias[dst+'/'+src] = taia
+
+      buffer = re.split(' +',buffer,1)[0] \
+             + ' ' \
+             + re.split(' +',buffer,2)[1].upper() \
+             + ' ' \
+             + re.split(' +',buffer,3)[2] \
+             + ' :' \
+             + m.split('\n',1)[0]
 
   buffer = codecs.ascii_encode(unicodedata.normalize('NFKD',unicode(buffer,'utf-8','replace')),'ignore')[0]
   buffer = re.sub('[\x02\x0f]','',buffer)
