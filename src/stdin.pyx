@@ -29,13 +29,13 @@ while 1:
     if byte != '\r':
       buffer+=byte
 
-  if re.search('^((PRIVMSG)|(NOTICE)|(TOPIC)) ['+RE+']+ :.*$',buffer.upper()):
+  if re.search('^((PRIVMSG)|(NOTICE)|(TOPIC)) +['+RE+']+ +:?.*$',buffer.upper()):
 
-    dst = buffer.split(' ',2)[1].lower()
+    dst = re.split(' +:?',buffer,2)[1].lower()
 
     if dst in os.listdir('dstkey/'):
 
-      m      = buffer.split(':',1)[1]
+      m      = re.split(' +:?',buffer,3)[2]
       m     += '\n' + array.array('B',[rR(0,256) for i in range(0,64-len(m)%64-1)]).tostring()
       n      = nacltaia.taia_now()
       n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
@@ -47,21 +47,31 @@ while 1:
       pk     = binascii.unhexlify(open('dstkey/'+dst,'rb').read(64))
       sk     = binascii.unhexlify(open('seckey','rb').read(64))
       c      = nacltaia.crypto_box(c,n,pk,sk)
-      buffer = buffer.split(':',1)[0] + ':' + base91a.encode(n+c)
 
-  elif re.search('^((PRIVMSG)|(NOTICE)|(TOPIC)) #['+RE+']+ :.*$',buffer.upper()):
+      buffer  = re.split(' +',buffer,1)[0].upper() \
+              + ' ' \
+              + re.split(' +',buffer,2)[1] \
+              + ' :' \
+              + base91a.encode(n+c)
 
-    dst = buffer.split(' ',2)[1].lower()[1:]
+  elif re.search('^((PRIVMSG)|(NOTICE)|(TOPIC)) +#['+RE+']+ +:?.*$',buffer.upper()):
+
+    dst = re.split(' +:?',buffer,2)[1].lower()[1:]
 
     if dst in os.listdir('chnkey/'):
 
-      m      = buffer.split(':',1)[1]
+      m      = re.split(' +:?',buffer,3)[2]
       m     += '\n' + array.array('B',[rR(0,256) for i in range(0,111-len(m)%111)]).tostring()
       n      = nacltaia.taia_now()
       n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
       k      = binascii.unhexlify(open('chnkey/'+dst,'rb').read(64))
       c      = nacltaia.crypto_secretbox(m,n,k)
       c      = str() if c == 0 else c
-      buffer = buffer.split(':',1)[0] + ':' + base91a.encode(n+c)
+
+      buffer  = re.split(' +',buffer,1)[0].upper() \
+              + ' ' \
+              + re.split(' +',buffer,2)[1] \
+              + ' :' \
+              + base91a.encode(n+c)
 
   os.write(1,buffer+'\n')

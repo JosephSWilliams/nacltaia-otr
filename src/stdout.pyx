@@ -31,16 +31,16 @@ while 1:
     if byte != '\r':
       buffer+=byte
 
-  if re.search('^:cryptoserv!.+@.+ ',buffer.lower()):
+  if re.search('^:cryptoserv',buffer.lower()):
     continue
 
-  if re.search('^:['+RE+']+!['+RE+']+@['+RE+'.]+ ((PRIVMSG)|(NOTICE)|(TOPIC)) ['+RE+']+ :.*$',buffer.upper()):
+  if re.search('^:['+RE+']+!['+RE+']+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +['+RE+']+ +:?.*$',buffer.upper()):
 
-    src = buffer.split(':',2)[1].split('!',1)[0].lower()
+    src = buffer[1:].split('!',1)[0].lower()
 
     if src in os.listdir('dstkey/'):
 
-      c = base91a.decode(buffer.split(':',2)[2])
+      c = base91a.decode(re.split(' +:?',buffer,3)[3])
 
       if not c:
         continue
@@ -81,23 +81,28 @@ while 1:
       taias[src] = taia
 
       if m == 0:
-        buffer = ':CryptoServ!nacltaia-otr@service NOTICE ' + buffer.split(' ')[2] + ' :unable to decrypt message from ' + src
+        buffer = ':CryptoServ!nacltaia-otr@service NOTICE ' + re.split(' +',buffer,3)[2] + ' :unable to decrypt message from ' + src
 
       else:
-        m      = m.split('\n',1)[0]
-        buffer = ':' + buffer.split(':',2)[1] + ':' + m
+        buffer  = re.split(' +',buffer,1)[0] \
+                + ' ' \
+                + re.split(' +',buffer,2)[1].upper() \
+                + ' ' \
+                + re.split(' +',buffer,3)[2] \
+                + ' :' \
+                + m.split('\n',1)[0]
 
-  elif re.search('^:['+RE+']+!['+RE+']+@['+RE+'.]+ ((PRIVMSG)|(NOTICE)|(TOPIC)) #['+RE+']+ :.*$',buffer.upper()):
+  elif re.search('^:['+RE+']+!['+RE+']+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +#['+RE+']+ +:?.*$',buffer.upper()):
 
-    src = buffer.split(':',2)[1].split('!',1)[0].lower()
-    dst = buffer.split(' ',3)[2].lower()[1:]
+    src = buffer[1:].split('!',1)[0].lower()
+    dst = re.split(' +',buffer,3)[2].lower()[1:]
 
     if dst in os.listdir('chnkey/'):
 
       if not src in os.listdir('dstkey/'):
         continue
 
-      c = base91a.decode(buffer.split(':',2)[2])
+      c = base91a.decode(re.split(' +:?',buffer,3)[3])
 
       if not c:
         continue
@@ -120,8 +125,14 @@ while 1:
         continue
 
       taias[src] = taia
-      m          = m.split('\n',1)[0]
-      buffer     = ':' + buffer.split(':',2)[1] + ':' + m
+
+      buffer  = re.split(' +',buffer,1)[0] \
+              + ' ' \
+              + re.split(' +',buffer,2)[1].upper() \
+              + ' ' \
+              + re.split(' +',buffer,3)[2] \
+              + ' :' \
+              + m.split('\n',1)[0]
 
   buffer = codecs.ascii_encode(unicodedata.normalize('NFKD',unicode(buffer,'utf-8','replace')),'ignore')[0]
   buffer = re.sub('[\x02\x0f]','',buffer)
