@@ -18,4 +18,4 @@ BUILDDIR="build/$(hostname | sed 's/\..*//' | tr -cd '[a-z][A-Z][0-9]')"
 
 mkdir -p /usr/include/nacl
 cp "${BUILDDIR}/lib/${ABINAME}/"* /usr/lib/
-cp "${BUILDDIR}/include/${ABINAME}/"* /usr/lib/
+cp "${BUILDDIR}/include/${ABINAME}/"* /usr/include/nacl/
