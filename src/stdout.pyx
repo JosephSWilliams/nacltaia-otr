@@ -57,11 +57,11 @@ while 1:
       m    = 0
       taia = binascii.hexlify(n[:16])
 
-      if not long(taia,16) and len(c) > 32:
-        taia = binascii.hexlify(n[16:]) + '0000000000000000'
-        pk   = c[:32]
+      #if not long(taia,16) and len(c) > 32:
+      #  taia = binascii.hexlify(n[16:]) + '0000000000000000'
+      #  pk   = c[:32]
 
-      elif len(c) >= 32 + 16:
+      if len(c) >= 32 + 16:
         pk = c[:32]
         sk = open('tmpkey/'+src+'/sk','rb').read(32)
         m  = nacltaia.crypto_box_open(c[32:],n,pk,sk)
