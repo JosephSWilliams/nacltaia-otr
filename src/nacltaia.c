@@ -4,6 +4,32 @@
 #include <Python.h>
 #include <taia.h>
 
+#define ____PYTHON_H_
+
+#ifndef PY_HAS_PY_SSIZE_T
+#define PY_HAS_PY_SSIZE_T
+#endif
+#ifndef PY_SSIZE_T_CLEAN
+#define PY_SSIZE_T_CLEAN
+#endif
+
+#if PY_MAJOR_VERSION < 2
+extern void PyModule_AddIntConstant(PyObject *m, const char *name, long value);
+extern void PyModule_AddStringConstant(PyObject *m, const char *name, const char *value);
+#endif
+
+#if PY_VERSION_HEX < 0x02060000
+#define PyBytes_FromStringAndSize PyString_FromStringAndSize
+#endif
+
+#if PY_VERSION_HEX < 0x02030000
+#define PyMODINIT_FUNC DL_EXPORT(void)
+#endif
+
+#if PY_VERSION_HEX < 0x02050000
+typedef int Py_ssize_t;
+#endif
+
 PyObject *pynacltaia(PyObject *self){ /* hack __init__ */
   return Py_BuildValue("i", 0);}
 
