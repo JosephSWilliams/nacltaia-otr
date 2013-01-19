@@ -126,10 +126,10 @@ while 1:
       if long(taia,16) <= long(taias[dst+'/'+src],16):
         continue
 
-      taia_now = binascii.hexlify(nacltaia.taia_now())
+      #taia_now = binascii.hexlify(nacltaia.taia_now())
 
-      if long(taia_now,16) <= long(taias[dst+'/'+src],16):
-        continue
+      #if long(taia_now,16) <= long(taias[dst+'/'+src],16):
+      #  continue
 
       taias[dst+'/'+src] = taia
 

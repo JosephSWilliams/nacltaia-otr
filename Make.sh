@@ -25,8 +25,7 @@ gcc src/crypto_box_keypair.c -o crypto_box_keypair -l nacl /usr/lib/randombytes.
 
 gcc -O2 -fPIC -DPIC src/nacltaia.c -shared -I $HEADERS -o nacltaia.so -l python2.6 -l tai -l nacl /usr/lib/randombytes.o || exit 1
 
-# cython bug (SIGSEGV)
-#if ! $(which cython 2>&1 >/dev/null); then
+if ! $(which cython 2>&1 >/dev/null); then
 
   cp src/stdio.pyx stdio || exit 1
   chmod +x stdio         || exit 1
@@ -43,7 +42,7 @@ gcc -O2 -fPIC -DPIC src/nacltaia.c -shared -I $HEADERS -o nacltaia.so -l python2
   rm -rf build || exit 1
 
   exit 0
-#fi
+fi
 
 cython --embed src/stdio.pyx -o build/stdio.c         || exit 1
 gcc -O2 -c build/stdio.c -I $HEADERS -o build/stdio.o || exit 1
