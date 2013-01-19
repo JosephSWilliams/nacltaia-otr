@@ -15,17 +15,17 @@ fi
 
 mkdir -p build || exit 1
 
-gcc -O3 src/seckey.c -o seckey || exit 1
+gcc src/seckey.c -o seckey || exit 1
 
-gcc -O3 src/keypair.c -o keypair -l nacl /usr/lib/randombytes.o || exit 1
+gcc src/keypair.c -o keypair -l nacl /usr/lib/randombytes.o || exit 1
 
-gcc -O3 -fPIC src/base91a.c -shared -I $HEADERS -o base91a.so -l python2.6 || exit 1
+gcc -O2 -fPIC -DPIC src/base91a.c -shared -I $HEADERS -o base91a.so -l python2.6 || exit 1
 
-gcc -O3 src/crypto_box_keypair.c -o crypto_box_keypair -l nacl /usr/lib/randombytes.o || exit 1
+gcc src/crypto_box_keypair.c -o crypto_box_keypair -l nacl /usr/lib/randombytes.o || exit 1
 
-gcc -O3 -fPIC src/nacltaia.c -shared -I $HEADERS -o nacltaia.so -l python2.6 -l tai -l nacl /usr/lib/randombytes.o || exit 1
+gcc -O2 -fPIC -DPIC src/nacltaia.c -shared -I $HEADERS -o nacltaia.so -l python2.6 -l tai -l nacl /usr/lib/randombytes.o || exit 1
 
-# cython bug (SIGSEV)
+# cython bug (SIGSEGV)
 #if ! $(which cython 2>&1 >/dev/null); then
 
   cp src/stdio.pyx stdio || exit 1

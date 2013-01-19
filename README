@@ -109,6 +109,7 @@ adding crypto:
   setuidgid nacltaia-otr mkdir -p crypto/tmpkey/$nick
 
   printf $pubkey > crypto/dstkey/$nick
+  ./newsessiongen crypto/
 
   # [security] $channel should be lowercase
   # with no hashtag. $nick should be
@@ -121,6 +122,7 @@ adding crypto:
 
   printf $pubkey > crypto/dstkey/$nick
   printf $seckey > crypto/chnkey/$channel
+  ./newsessiongen crypto/
 
 perfect forward secrecy:
 

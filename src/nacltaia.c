@@ -52,6 +52,7 @@ PyObject *pycrypto_box_keypair(PyObject *self){
   return pyret;}
 
 PyObject *pycrypto_box(PyObject *self, PyObject *args, PyObject *kw){
+  write(2,"0\n",2);
   char *m, *n, *pk, *sk;
   Py_ssize_t msize=0, nsize=0, pksize=0, sksize=0;
   static const char *kwlist[] = {"m", "n", "pk", "sk", 0};
@@ -60,35 +61,36 @@ PyObject *pycrypto_box(PyObject *self, PyObject *args, PyObject *kw){
   size_t mlen;
   unsigned char *mpad;
   unsigned char *cpad;
-
+  write(2,"1\n",2);
   if (!PyArg_ParseTupleAndKeywords(args, kw, "|s#s#s#s#:crypto_box", (char **) kwlist, &m, &msize, &n, &nsize, &pk, &pksize, &sk, &sksize)){
     return (PyObject *)0;}
-
+  write(2,"2\n",2);
   if (nsize != crypto_box_NONCEBYTES) return Py_BuildValue("i", 0);
   if (pksize != crypto_box_PUBLICKEYBYTES) Py_BuildValue("i", 0);
   if (sksize != crypto_box_SECRETKEYBYTES) Py_BuildValue("i", 0);
-
+  write(2,"3\n",2);
   mlen = msize + crypto_box_ZEROBYTES;
   mpad = PyMem_Malloc(mlen);
-
+  write(2,"4\n",2);
   if (!mpad)
     return PyErr_NoMemory();
-
+  write(2,"5\n",2);
   cpad = PyMem_Malloc(mlen);
-
+  write(2,"6\n",2);
   if (!cpad){
     PyMem_Free(mpad);
     return PyErr_NoMemory();}
-
+  write(2,"7\n",2);
   for (i = 0;i < crypto_box_ZEROBYTES;++i) mpad[i] = 0;
   for (i = crypto_box_ZEROBYTES;i < mlen;++i) mpad[i] = m[i - crypto_box_ZEROBYTES];
-
+  write(2,"8\n",2);
   crypto_box(cpad, mpad, mlen,(const unsigned char *) n,(const unsigned char *) pk,(const unsigned char *) sk);
-
+  write(2,"9\n",2);
   ret = PyBytes_FromStringAndSize((char *)cpad + crypto_box_BOXZEROBYTES,mlen - crypto_box_BOXZEROBYTES);
-
+  write(2,"10\n",3);
   PyMem_Free(mpad);
   PyMem_Free(cpad);
+  write(2,"11\n",3);
   return ret;}
 
 PyObject *pycrypto_box_open(PyObject *self, PyObject *args, PyObject *kw){

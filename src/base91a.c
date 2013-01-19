@@ -14,7 +14,8 @@ PyObject *pyencode(PyObject *self, PyObject *args, PyObject *kw){
   unsigned char *out;
   out = PyMem_Malloc(dlen*2);
 
-  if (!out) return PyErr_NoMemory();
+  if (!out)
+    return PyErr_NoMemory();
 
   int l = 0; int i = 0; int b = 0; int n = 0; int v = 0;
 
@@ -53,7 +54,8 @@ PyObject *pydecode(PyObject *self, PyObject *args, PyObject *kw){
   unsigned char *out;
   out = PyMem_Malloc(dlen);
 
-  if (!out) return PyErr_NoMemory();
+  if (!out)
+    return PyErr_NoMemory();
 
   int l = 0; int i = 0; int c =  0;
   int b = 0; int n = 0; int v = -1;
