@@ -309,16 +309,16 @@ PyObject *pycrypto_sign_open(PyObject *self, PyObject *args, PyObject *kw){
   return ret;}
 
 static PyMethodDef Module_methods[] = {
-  {"nacltaia",             pynacltaia,             METH_VARARGS},
-  {"taia_now",             pytaia_now,             METH_VARARGS},
-  {"crypto_box",           pycrypto_box,           METH_VARARGS},
-  {"crypto_box_open",      pycrypto_box_open,      METH_VARARGS},
-  {"crypto_box_keypair",   pycrypto_box_keypair,   METH_VARARGS},
-  {"crypto_sign",          pycrypto_sign,          METH_VARARGS},
-  {"crypto_sign_open",     pycrypto_sign_open,     METH_VARARGS},
-  {"crypto_sign_keypair",  pycrypto_sign_keypair,  METH_VARARGS},
-  {"crypto_secretbox",     pycrypto_secretbox,     METH_VARARGS},
-  {"crypto_secretbox_open",pycrypto_secretbox_open,METH_VARARGS},
+  {"nacltaia",             pynacltaia,             METH_NOARGS},
+  {"taia_now",             pytaia_now,             METH_NOARGS},
+  {"crypto_box",           pycrypto_box,           METH_VARARGS|METH_KEYWORDS},
+  {"crypto_box_open",      pycrypto_box_open,      METH_VARARGS|METH_KEYWORDS},
+  {"crypto_box_keypair",   pycrypto_box_keypair,   METH_NOARGS},
+  {"crypto_sign",          pycrypto_sign,          METH_VARARGS|METH_KEYWORDS},
+  {"crypto_sign_open",     pycrypto_sign_open,     METH_VARARGS|METH_KEYWORDS},
+  {"crypto_sign_keypair",  pycrypto_sign_keypair,  METH_NOARGS},
+  {"crypto_secretbox",     pycrypto_secretbox,     METH_VARARGS|METH_KEYWORDS},
+  {"crypto_secretbox_open",pycrypto_secretbox_open,METH_VARARGS|METH_KEYWORDS},
   {NULL, NULL}};
 
 void initnacltaia(){

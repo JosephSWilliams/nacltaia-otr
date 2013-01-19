@@ -90,9 +90,9 @@ PyObject *pydecode(PyObject *self, PyObject *args, PyObject *kw){
   return ret;}
 
 static PyMethodDef Module_methods[] = {
-  {"base91a", pybase91a, METH_VARARGS},
-  {"encode" , pyencode , METH_VARARGS},
-  {"decode" , pydecode , METH_VARARGS},
+  {"base91a", pybase91a, METH_NOARGS},
+  {"encode" , pyencode , METH_VARARGS|METH_KEYWORDS},
+  {"decode" , pydecode , METH_VARARGS|METH_KEYWORDS},
   {NULL, NULL}};
 
 void initbase91a(){
