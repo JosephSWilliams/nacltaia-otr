@@ -159,3 +159,7 @@ urcd:
 ucspi-tcp:
   tcpserver 127.0.0.1 6667 tcpclient irc.crypto.net 6667 ./stdio &
   irssi -c 127.0.0.1
+
+ucspi-tcp (tor):
+  tcpserver 127.0.0.1 6667 tcpclient 127.0.0.1 9050 ./ucspi-socks4aclient irc.crypto.net 6667 ./stdio &
+  irssi -c 127.0.0.1
