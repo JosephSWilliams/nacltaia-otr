@@ -78,7 +78,6 @@ recommends:
 
 todo:
   fixes for pfs multiserver shared keys
-  fixes for amd64 and python c api
 
 amd64:
   # i've included some preinstall scripts to
