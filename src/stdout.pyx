@@ -151,8 +151,7 @@ while 1:
       c = re.split('([0-9]+)? +:?',c,2)[len(re.split('([0-9]+)? +:?',c,2))-1]
       c = base91a.decode(c)
 
-      if not c:
-        continue
+      c = str() if c == 0 else c
 
       n = c[:24]
       c = c[24:]
