@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if [ -e '/usr/lib/libnacl.so' ]; then
+  echo $0': fatal error: move /usr/lib/libnacl.so temporarily' 1>&2
+  exit 255
+fi
+
 unset HEADERS
 
 if   [ -e '/usr/include/python2.6/Python.h'       ] &&
@@ -62,8 +67,8 @@ cython --embed src/newsessiongen.pyx -o build/newsessiongen.c          || exit 1
 gcc -O2 -c build/newsessiongen.c -I $HEADERS -o build/newsessiongen.o  || exit 1
 gcc -O1 -o newsessiongen build/newsessiongen.o -l python2.6            || exit 1
 
-cython src/base91a.pyx -o build/base91a.c                                                                                                   || exit 1
-gcc -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -fPIC -I $HEADERS -c build/base91a.c -o build/base91a.o || exit 1
-gcc -pthread -shared -Wl,-O1 -Wl,-Bsymbolic-functions build/base91a.o -o base91a.so                                                         || exit 1
+#cython src/base91a.pyx -o build/base91a.c                                                                                                   || exit 1
+#gcc -pthread -fno-strict-aliasing -DNDEBUG -g -fwrapv -O2 -Wall -Wstrict-prototypes -fPIC -I $HEADERS -c build/base91a.c -o build/base91a.o || exit 1
+#gcc -pthread -shared -Wl,-O1 -Wl,-Bsymbolic-functions build/base91a.o -o base91a.so                                                         || exit 1
 
 rm -rf build || exit 1

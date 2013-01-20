@@ -141,6 +141,38 @@ while 1:
              + ' :' \
              + m.split('\n',1)[0]
 
+  elif re.search('^:['+RE+'.]+ +322 +['+RE+']+ +#['+RE+']+ ([0-9]+)? +:?.*$',buffer.upper()):
+
+    dst = re.split(' +',buffer,4)[3].lower()[1:]
+
+    if dst in os.listdir('chnkey/'):
+
+      c = re.split(' +:?',buffer,4)[4]
+      c = re.split('([0-9]+)? +:?',c,2)[len(re.split('([0-9]+)? +:?',c,2))-1]
+      c = base91a.decode(c)
+
+      if not c:
+        continue
+
+      n = c[:24]
+      c = c[24:]
+      k = binascii.unhexlify(open('chnkey/'+dst,'rb').read(64))
+      m = nacltaia.crypto_secretbox_open(c,n,k)
+
+      m = str() if m == 0 else m
+
+      buffer = re.split(' +',buffer,1)[0] \
+             + ' ' \
+             + re.split(' +',buffer,2)[1] \
+             + ' ' \
+             + re.split(' +',buffer,3)[2] \
+             + ' ' \
+             + re.split(' +',buffer,4)[3] \
+             + ' ' \
+             + str(len(os.listdir('dstkey/'))+1) \
+             + ' :' \
+             + m.split('\n',1)[0]
+
   buffer = codecs.ascii_encode(unicodedata.normalize('NFKD',unicode(buffer,'utf-8','replace')),'ignore')[0]
   buffer = re.sub('[\x02\x0f]','',buffer)
   buffer = re.sub('\x01(ACTION )?','*',buffer) # contains potential irssi bias
