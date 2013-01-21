@@ -220,7 +220,7 @@ while 1:
 
       taia = binascii.hexlify(n[:16])
 
-      if not long(taia,16):
+      if len(n) >= 16 and not long(taia,16):
         pk = m[:32]
         m  = nacltaia.crypto_sign_open(m[32:],pk)
         m  = str() if m == 0 else m
