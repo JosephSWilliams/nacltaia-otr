@@ -103,7 +103,7 @@ while 1:
       m      = re.split(' +:?',buffer,2)[2]
       m     += '\n'
       n      = nacltaia.taia_now()
-      n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
+      n     += array.array('B',[0 for i in range(0,8)]).tostring()
       pk     = binascii.unhexlify(open('sign/'+dst+'/pubkey','rb').read(64))
       sk     = binascii.unhexlify(open('sign/'+dst+'/seckey','rb').read(128))
       m      = nacltaia.crypto_sign(n+m,sk)
@@ -114,6 +114,6 @@ while 1:
              + ' ' \
              + re.split(' +',buffer,2)[1] \
              + ' :' \
-             + base91a.encode(m)
+             + base91a.encode(n+m)
 
   os.write(1,buffer+'\n')

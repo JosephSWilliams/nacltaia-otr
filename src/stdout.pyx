@@ -105,10 +105,11 @@ while 1:
 
     src = buffer[1:].split('!',1)[0].lower()
     dst = re.split(' +',buffer,3)[2].lower()[1:]
+    m   = re.split(' +:?',buffer,3)[3]
 
     if dst in os.listdir('chnkey/'):
 
-      c = base91a.decode(re.split(' +:?',buffer,3)[3])
+      c = base91a.decode(m)
 
       if not c:
         continue
@@ -167,35 +168,45 @@ while 1:
              + ' :' \
              + m.split('\n',1)[0]
 
-    elif dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'):
+    elif len(m) >= 56 + 64:
 
       m = base91a.decode(re.split(' +:?',buffer,3)[3])
 
-      if not m:
-        continue
+      if m and m[16:24] == '\x00\x00\x00\x00\x00\x00\x00\x00':
 
-      pk = m[:32]
+        n  = m[:24]
+        pk = m[24:56]
 
-      if pk != binascii.unhexlify(open('unsign/'+dst+'/'+src,'rb').read(64)):
-        continue
+        m = nacltaia.crypto_sign_open(m[56:],pk)
 
-      m = nacltaia.crypto_sign_open(m[32:],pk)
+        if m == 0:
+          continue
 
-      if m == 0:
-        continue
+        if n != m[:24]:
+          continue
 
-      n = m[:24]
-      m = m[24:]
+        m = m[24:]
 
-      taia = binascii.hexlify(n[:16])
+        taia = binascii.hexlify(n[:16])
 
-      if not src in taias.keys():
-        taias[src] = taia_now
+        if dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'):
 
-      if not oksrctaia(taia,taia_now):
-        continue
+          if pk != binascii.unhexlify(open('unsign/'+dst+'/'+src,'rb').read(64)):
+            continue
 
-      taias[src] = taia
+          if not src in taias.keys():
+            taias[src] = taia_now
+
+          if not oksrctaia(taia,taia_now):
+            continue
+
+          taias[src] = taia
+
+        elif not oktaia(32,taia):
+          continue
+
+      else:
+        m = re.split(' +:?',buffer,3)[3]
 
       buffer = re.split(' +',buffer,1)[0] \
              + ' ' \
