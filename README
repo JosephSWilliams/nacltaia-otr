@@ -122,6 +122,7 @@ adding crypto:
 
   ./newsessiongen crypto/
 
+  chmod 777 crypto/ -R
   chown nacltaia-otr crypto/ -R
 
   # [security] $channel should be lowercase
@@ -133,11 +134,9 @@ adding crypto:
   mkdir -p crypto/dstkey/
   mkdir -p crypto/tmpkey/$nick
 
-  printf $pubkey > crypto/dstkey/$nick
   printf $seckey > crypto/chnkey/$channel
 
-  ./newsessiongen crypto/
-
+  chmod 777 crypto/ -R
   chown nacltaia-otr crypto/ -R
 
 adding signatures:
@@ -153,6 +152,7 @@ adding signatures:
     printf $pubkey > crypto/sign/$channel/pubkey
     printf $seckey > crypto/sign/$channel/seckey
 
+    chmod 777 crypto/ -R
     chown nacltaia-otr crypto/ -R
 
   # enforcing remote signatures:
@@ -161,6 +161,7 @@ adding signatures:
 
     printf $pubkey > crypto/unsign/$channel/$nick
 
+    chmod 777 crypto/ -R
     chown nacltaia-otr crypto/ -R
 
 perfect forward secrecy:
