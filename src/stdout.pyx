@@ -16,7 +16,7 @@ del uid
 
 taias    = dict()
 RE       = 'a-zA-Z0-9^(\)\-_{\}[\]|'
-taia_now = binascii.hexlify(nacltaia.taia_now())
+taia_now = binascii.hexlify(nacltaia.taia_now()[:7]) + '000000000000000000'
 
 while 1:
 
@@ -67,7 +67,6 @@ while 1:
 
       if not src in taias.keys():
         taias[src] = taia_now
-        taia_now   = binascii.hexlify(nacltaia.taia_now())
 
       if long(taia,16) <= long(taias[src],16):
         continue
@@ -134,14 +133,13 @@ while 1:
 
           if not src in taias.keys():
             taias[src] = taia_now
-            taia_now   = binascii.hexlify(nacltaia.taia_now())
 
-          if long(taia[:16],16) < long(taias[src][:16],16):
+          if long(taia[:16],16) <= long(taias[src][:16],16):
             continue
 
           taias[src] = taia
 
-        elif long(taia[:16],16) < long(taia_now[:16],16):
+        elif long(taia[:16],16) <= long(taia_now[:16],16):
           continue
 
       elif dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'):
@@ -149,8 +147,6 @@ while 1:
 
       elif long(taia,16) <= long(taia_now,16):
         continue
-
-      taia_now = binascii.hexlify(nacltaia.taia_now()[:8]) + '0000000000000000'
 
       buffer = re.split(' +',buffer,1)[0] \
              + ' ' \
@@ -184,7 +180,6 @@ while 1:
 
       if not src in taias.keys():
         taias[src] = taia_now
-        taia_now   = binascii.hexlify(nacltaia.taia_now())
 
       if long(taia,16) <= long(taias[src],16):
         continue
@@ -262,3 +257,5 @@ while 1:
 
   if len(buffer)<=1024:
     os.write(1,buffer)
+
+  taia_now = binascii.hexlify(nacltaia.taia_now()[:7]) + '000000000000000000'
