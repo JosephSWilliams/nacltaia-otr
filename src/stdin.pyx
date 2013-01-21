@@ -64,7 +64,7 @@ while 1:
       time.sleep(1) # ensure 1 second increment
 
       m      = re.split(' +:?',buffer,2)[2]
-      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,256-(len(m)+1+32+64+16)%256)]).tostring()
+      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,256-(len(m)+1+24+32+64+16)%256)]).tostring()
       pk     = binascii.unhexlify(open('sign/'+dst+'/pubkey','rb').read(64))
       sk     = binascii.unhexlify(open('sign/'+dst+'/seckey','rb').read(128))
       n      = array.array('B',[0 for i in range(0,16)]).tostring()
