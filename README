@@ -19,8 +19,9 @@ nacltaia-otr:
 
   the selected primitives provide authenticated,
   encrypted messages for senders to receivers
-  with a shared seckey. the protocol protects
-  receivers from forgeries and replay attacks.
+  with a shared seckey. the protocol provides
+  that only receivers with the shared seckey
+  can view the plaintext of a message.
 
   IMHO PM/CHAT messages are usually between 0 and 128
   bytes length. nacltaia-otr automatically pads each
@@ -98,6 +99,8 @@ install:
   sed 's/\.6/.7/g' Make.sh | sh
 
   mkdir -p crypto/
+  mkdir -p crypto/sign/
+  mkdir -p crypto/unsign/
   mkdir -p crypto/tmpkey/
   mkdir -p crypto/dstkey/
   mkdir -p crypto/chnkey/
@@ -112,11 +115,14 @@ install:
 adding crypto:
   # [security] $nick should be lowercase
 
-  setuidgid nacltaia-otr mkdir -p crypto/dstkey/$nick
-  setuidgid nacltaia-otr mkdir -p crypto/tmpkey/$nick
+  mkdir -p crypto/dstkey/$nick
+  mkdir -p crypto/tmpkey/$nick
 
   printf $pubkey > crypto/dstkey/$nick
+
   ./newsessiongen crypto/
+
+  chown nacltaia-otr crypto/ -R
 
   # [security] $channel should be lowercase
   # with no hashtag. $nick should be
@@ -124,12 +130,38 @@ adding crypto:
 
   ./seckey
 
-  setuidgid nacltaia-otr mkdir -p crypto/dstkey/$nick
-  setuidgid nacltaia-otr mkdir -p crypto/tmpkey/$nick
+  mkdir -p crypto/dstkey/$nick
+  mkdir -p crypto/tmpkey/$nick
 
   printf $pubkey > crypto/dstkey/$nick
   printf $seckey > crypto/chnkey/$channel
+
   ./newsessiongen crypto/
+
+  chown nacltaia-otr crypto/ -R
+
+adding signatures:
+  # WARNING: crypto_sign does not provide repudiation
+  # [security] $nick and $channel should be lowercase
+  # with no hashtag
+
+  # signing channel messages:
+    ./sign_keypair
+
+    mkdir -p crypto/sign/$channel
+
+    printf $pubkey > crypto/sign/$channel/pubkey
+    printf $seckey > crypto/sign/$channel/seckey
+
+    chown nacltaia-otr crypto/ -R
+
+  # enforcing remote signatures:
+
+    mkdir -p crypto/unsign/$channel
+
+    printf $pubkey > crypto/unsign/$channel/$nick
+
+    chown nacltaia-otr crypto/ -R
 
 perfect forward secrecy:
 

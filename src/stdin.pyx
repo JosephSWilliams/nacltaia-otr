@@ -36,7 +36,7 @@ while 1:
     if dst in os.listdir('dstkey/'):
 
       m      = re.split(' +:?',buffer,2)[2]
-      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,64-len(m)%64-1)]).tostring()
+      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,111-len(m)%111)]).tostring()[48:]
       n      = nacltaia.taia_now()
       n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
       pk     = open('tmpkey/'+dst+'/tk','rb').read(32)
@@ -58,7 +58,27 @@ while 1:
 
     dst = re.split(' +:?',buffer,2)[1].lower()[1:]
 
-    if dst in os.listdir('chnkey/'):
+    if dst in os.listdir('sign/') and dst in os.listdir('chnkey/'):
+      m      = re.split(' +:?',buffer,2)[2]
+      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,111-len(m)%111)]).tostring()[120:]
+      pk     = binascii.unhexlify(open('sign/'+dst+'/pubkey','rb').read(64))
+      sk     = binascii.unhexlify(open('sign/'+dst+'/seckey','rb').read(128))
+      n      = array.array('B',[0 for i in range(0,16)]).tostring()
+      n     += nacltaia.taia_now()[:8]
+      m      = nacltaia.crypto_sign(n+m,sk)
+      m      = str() if m == 0 else m
+      m      = pk + m
+      k      = binascii.unhexlify(open('chnkey/'+dst,'rb').read(64))
+      c      = nacltaia.crypto_secretbox(m,n,k)
+      c      = str() if c == 0 else c
+
+      buffer = re.split(' +',buffer,1)[0].upper() \
+             + ' ' \
+             + re.split(' +',buffer,2)[1] \
+             + ' :' \
+             + base91a.encode(n+c)
+
+    elif dst in os.listdir('chnkey/'):
 
       m      = re.split(' +:?',buffer,2)[2]
       m     += '\n' + array.array('B',[rR(0,256) for i in range(0,111-len(m)%111)]).tostring()
@@ -73,5 +93,22 @@ while 1:
              + re.split(' +',buffer,2)[1] \
              + ' :' \
              + base91a.encode(n+c)
+
+    elif dst in os.listdir('sign/'):
+      m      = re.split(' +:?',buffer,2)[2]
+      m     += '\n'
+      n      = nacltaia.taia_now()
+      n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
+      pk     = binascii.unhexlify(open('sign/'+dst+'/pubkey','rb').read(64))
+      sk     = binascii.unhexlify(open('sign/'+dst+'/seckey','rb').read(128))
+      m      = nacltaia.crypto_sign(n+m,sk)
+      m      = str() if m == 0 else m
+      m      = pk + m
+
+      buffer = re.split(' +',buffer,1)[0].upper() \
+             + ' ' \
+             + re.split(' +',buffer,2)[1] \
+             + ' :' \
+             + base91a.encode(m)
 
   os.write(1,buffer+'\n')

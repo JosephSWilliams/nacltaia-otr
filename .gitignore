@@ -5,8 +5,11 @@ newsessiongen
 nacltaia.so
 base91a.py
 base91a.so
+
+sign_keypair
 keypair
 seckey
+
 crypto
 stdout
 stdin

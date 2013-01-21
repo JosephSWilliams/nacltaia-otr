@@ -57,10 +57,6 @@ while 1:
       m    = 0
       taia = binascii.hexlify(n[:16])
 
-      #if not long(taia,16) and len(c) > 32:
-      #  taia = binascii.hexlify(n[16:]) + '0000000000000000'
-      #  pk   = c[:32]
-
       if len(c) >= 32 + 16:
         pk = c[:32]
         sk = open('tmpkey/'+src+'/sk','rb').read(32)
@@ -76,7 +72,8 @@ while 1:
       if long(taia,16) <= long(taias[src],16):
         continue
 
-      open('tmpkey/'+src+'/tk','wb').write(pk)
+      if open('tmpkey/'+src+'/tk','rb').read(32) != pk:
+        open('tmpkey/'+src+'/tk','wb').write(pk)
 
       taias[src] = taia
 
@@ -101,9 +98,6 @@ while 1:
 
     if dst in os.listdir('chnkey/'):
 
-      if not src in os.listdir('dstkey/'):
-        continue
-
       c = base91a.decode(re.split(' +:?',buffer,3)[3])
 
       if not c:
@@ -119,19 +113,83 @@ while 1:
 
       taia = binascii.hexlify(n[:16])
 
-      if not (dst+'/'+src) in taias.keys():
-        taias[dst+'/'+src] = taia_now
-        taia_now = binascii.hexlify(nacltaia.taia_now())
+      if not long(taia,16) and len(c) >= 32 + 64 + 24:
 
-      if long(taia,16) <= long(taias[dst+'/'+src],16):
+        pk = m[:32]
+        m  = nacltaia.crypto_sign_open(m[32:],pk)
+
+        if m == 0:
+          continue
+
+        if n != m[:24]:
+          continue
+
+        m    = m[24:]
+        taia = binascii.hexlify(n[16:]) + '0000000000000000'
+
+        if dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'):
+
+          if pk != binascii.unhexlify(open('unsign/'+dst+'/'+src,'rb').read(64)):
+            continue
+
+          if not src in taias.keys():
+            taias[src] = taia_now
+            taia_now   = binascii.hexlify(nacltaia.taia_now())
+
+          if long(taia[:16],16) < long(taias[src][:16],16):
+            continue
+
+          taias[src] = taia
+
+        elif long(taia[:16],16) < long(taia_now[:16],16):
+          continue
+
+      elif dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'):
         continue
 
-      #taia_now = binascii.hexlify(nacltaia.taia_now())
+      elif long(taia,16) <= long(taia_now,16):
+        continue
 
-      #if long(taia_now,16) <= long(taias[dst+'/'+src],16):
-      #  continue
+      taia_now = binascii.hexlify(nacltaia.taia_now()[:8]) + '0000000000000000'
 
-      taias[dst+'/'+src] = taia
+      buffer = re.split(' +',buffer,1)[0] \
+             + ' ' \
+             + re.split(' +',buffer,2)[1].upper() \
+             + ' ' \
+             + re.split(' +',buffer,3)[2] \
+             + ' :' \
+             + m.split('\n',1)[0]
+
+    elif dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'):
+
+      m = base91a.decode(re.split(' +:?',buffer,3)[3])
+
+      if not m:
+        continue
+
+      pk = m[:32]
+
+      if pk != binascii.unhexlify(open('unsign/'+dst+'/'+src,'rb').read(64)):
+        continue
+
+      m = nacltaia.crypto_sign_open(m[32:],pk)
+
+      if m == 0:
+        continue
+
+      n = m[:24]
+      m = m[24:]
+
+      taia = binascii.hexlify(n[:16])
+
+      if not src in taias.keys():
+        taias[src] = taia_now
+        taia_now   = binascii.hexlify(nacltaia.taia_now())
+
+      if long(taia,16) <= long(taias[src],16):
+        continue
+
+      taias[src] = taia
 
       buffer = re.split(' +',buffer,1)[0] \
              + ' ' \
@@ -160,17 +218,39 @@ while 1:
 
       m = str() if m == 0 else m
 
-      buffer = re.split(' +',buffer,1)[0] \
-             + ' ' \
-             + re.split(' +',buffer,2)[1] \
-             + ' ' \
-             + re.split(' +',buffer,3)[2] \
-             + ' ' \
-             + re.split(' +',buffer,4)[3] \
-             + ' ' \
-             + str(len(os.listdir('dstkey/'))+1) \
-             + ' :' \
-             + m.split('\n',1)[0]
+      taia = binascii.hexlify(n[:16])
+
+      if not long(taia,16):
+        pk = m[:32]
+        m  = nacltaia.crypto_sign_open(m[32:],pk)
+        m  = str() if m == 0 else m
+        m  = m[24:]
+
+      if re.search('^:['+RE+'.]+ +322 +['+RE+']+ +#['+RE+']+ +:?.*$',buffer.upper()):
+
+        buffer = re.split(' +',buffer,1)[0] \
+               + ' ' \
+               + re.split(' +',buffer,2)[1] \
+               + ' ' \
+               + re.split(' +',buffer,3)[2] \
+               + ' ' \
+               + re.split(' +',buffer,4)[3] \
+               + ' :' \
+               + m.split('\n',1)[0]
+
+      elif re.search('^:['+RE+'.]+ +322 +['+RE+']+ +#['+RE+']+ ([0-9]+) +:?.*$',buffer.upper()):
+
+        buffer = re.split(' +',buffer,1)[0] \
+               + ' ' \
+               + re.split(' +',buffer,2)[1] \
+               + ' ' \
+               + re.split(' +',buffer,3)[2] \
+               + ' ' \
+               + re.split(' +',buffer,4)[3] \
+               + ' ' \
+               + re.split(' +',buffer,5)[4] \
+               + ' :' \
+               + m.split('\n',1)[0]
 
   buffer = codecs.ascii_encode(unicodedata.normalize('NFKD',unicode(buffer,'utf-8','replace')),'ignore')[0]
   buffer = re.sub('[\x02\x0f]','',buffer)
