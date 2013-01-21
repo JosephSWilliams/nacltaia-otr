@@ -115,7 +115,7 @@ install:
 adding crypto:
   # [security] $nick should be lowercase
 
-  mkdir -p crypto/dstkey/$nick
+  mkdir -p crypto/dstkey/
   mkdir -p crypto/tmpkey/$nick
 
   printf $pubkey > crypto/dstkey/$nick
@@ -130,7 +130,7 @@ adding crypto:
 
   ./seckey
 
-  mkdir -p crypto/dstkey/$nick
+  mkdir -p crypto/dstkey/
   mkdir -p crypto/tmpkey/$nick
 
   printf $pubkey > crypto/dstkey/$nick
