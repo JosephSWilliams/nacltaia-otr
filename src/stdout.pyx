@@ -14,9 +14,8 @@ os.chroot(os.getcwd())
 os.setuid(uid)
 del uid
 
-taias    = dict()
-RE       = 'a-zA-Z0-9^(\)\-_{\}[\]|'
-taia_now = binascii.hexlify(nacltaia.taia_now()[:7]) + '000000000000000000'
+taias = dict()
+RE    = 'a-zA-Z0-9^(\)\-_{\}[\]|'
 
 while 1:
 
@@ -33,6 +32,8 @@ while 1:
 
   if re.search('^:cryptoserv',buffer.lower()):
     continue
+
+  taia_now = binascii.hexlify(nacltaia.taia_now()[:7]) + '000000000000000000'
 
   if re.search('^:['+RE+']+!['+RE+']+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +['+RE+']+ +:?.*$',buffer.upper()):
 
@@ -257,5 +258,3 @@ while 1:
 
   if len(buffer)<=1024:
     os.write(1,buffer)
-
-  taia_now = binascii.hexlify(nacltaia.taia_now()[:7]) + '000000000000000000'
