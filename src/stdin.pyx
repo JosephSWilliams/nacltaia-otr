@@ -60,7 +60,9 @@ while 1:
     dst = re.split(' +:?',buffer,2)[1].lower()[1:]
 
     if dst in os.listdir('sign/') and dst in os.listdir('chnkey/'):
-      time.sleep(1)
+
+      time.sleep(1) # ensure 1 second increment
+
       m      = re.split(' +:?',buffer,2)[2]
       m     += '\n' + array.array('B',[rR(0,256) for i in range(0,256-(len(m)+1+32+64+16)%256)]).tostring()
       pk     = binascii.unhexlify(open('sign/'+dst+'/pubkey','rb').read(64))
@@ -81,7 +83,9 @@ while 1:
              + base91a.encode(n+c)
 
     elif dst in os.listdir('chnkey/'):
-      time.sleep(1)
+
+      time.sleep(1) # ensure 1 second increment
+
       m      = re.split(' +:?',buffer,2)[2]
       m     += '\n' + array.array('B',[rR(0,256) for i in range(0,256-(len(m)+1+16)%256)]).tostring()
       n      = nacltaia.taia_now()
@@ -97,7 +101,7 @@ while 1:
              + base91a.encode(n+c)
 
     elif dst in os.listdir('sign/'):
-      time.sleep(1)
+
       m      = re.split(' +:?',buffer,2)[2]
       m     += '\n'
       n      = nacltaia.taia_now()

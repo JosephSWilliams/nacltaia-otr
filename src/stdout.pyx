@@ -33,6 +33,7 @@ while 1:
   if re.search('^:cryptoserv',buffer.lower()):
     continue
 
+  # allow unverified packets within 256 second frames, may drop packet during increment
   taia_now = binascii.hexlify(nacltaia.taia_now()[:7]) + '000000000000000000'
 
   if re.search('^:['+RE+']+!['+RE+']+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +['+RE+']+ +:?.*$',buffer.upper()):
