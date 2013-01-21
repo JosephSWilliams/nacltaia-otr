@@ -17,6 +17,11 @@ del uid
 taias = dict()
 RE    = 'a-zA-Z0-9^(\)\-_{\}[\]|'
 
+def oktaia(n,taia):
+  taia     = taia[:16]
+  taia_now = binascii.hexlify(nacltaia.taia_now()[:8])
+  return 1 if abs( long(taia_now,16) - long(taia,16) ) < n else 0
+
 while 1:
 
   buffer = str()
@@ -33,8 +38,7 @@ while 1:
   if re.search('^:cryptoserv',buffer.lower()):
     continue
 
-  # allow unverified packets within 256 second frames, may drop packet during increment
-  taia_now = binascii.hexlify(nacltaia.taia_now()[:7]) + '000000000000000000'
+  taia_now = binascii.hexlify(nacltaia.taia_now()[:7]) + '000000000000000000' # contains potential to drop good packet
 
   if re.search('^:['+RE+']+!['+RE+']+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +['+RE+']+ +:?.*$',buffer.upper()):
 
@@ -141,13 +145,13 @@ while 1:
 
           taias[src] = taia
 
-        elif long(taia[:16],16) <= long(taia_now[:16],16):
+        elif not oktaia(32,taia):
           continue
 
       elif dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'):
         continue
 
-      elif long(taia,16) <= long(taia_now,16):
+      elif not oktaia(32,taia):
         continue
 
       buffer = re.split(' +',buffer,1)[0] \

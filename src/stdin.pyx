@@ -37,7 +37,7 @@ while 1:
     if dst in os.listdir('dstkey/'):
 
       m      = re.split(' +:?',buffer,2)[2]
-      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,256-(len(m)+1+32+16+16)%256)]).tostring()
+      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,256-(len(m)+1+24+32+16+16)%256)]).tostring()
       n      = nacltaia.taia_now()
       n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
       pk     = open('tmpkey/'+dst+'/tk','rb').read(32)
@@ -64,7 +64,7 @@ while 1:
       time.sleep(1) # ensure 1 second increment
 
       m      = re.split(' +:?',buffer,2)[2]
-      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,256-(len(m)+1+24+32+64+16)%256)]).tostring()
+      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,256-(len(m)+1+24+24+32+64+16)%256)]).tostring()
       pk     = binascii.unhexlify(open('sign/'+dst+'/pubkey','rb').read(64))
       sk     = binascii.unhexlify(open('sign/'+dst+'/seckey','rb').read(128))
       n      = array.array('B',[0 for i in range(0,16)]).tostring()
@@ -85,7 +85,7 @@ while 1:
     elif dst in os.listdir('chnkey/'):
 
       m      = re.split(' +:?',buffer,2)[2]
-      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,256-(len(m)+1+16)%256)]).tostring()
+      m     += '\n' + array.array('B',[rR(0,256) for i in range(0,256-(len(m)+1+24+16)%256)]).tostring()
       n      = nacltaia.taia_now()
       n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
       k      = binascii.unhexlify(open('chnkey/'+dst,'rb').read(64))
