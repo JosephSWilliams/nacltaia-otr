@@ -23,12 +23,12 @@ nacltaia-otr:
   that only receivers with the shared seckey
   can view the plaintext of a message.
 
-  IMHO PM/CHAT messages are usually between 0 and 128
+  IMHO PM/CHAT messages are usually between 0 and 256
   bytes length. nacltaia-otr automatically pads each
-  message in 128 byte blocks. in example, the messages
+  message in 256 byte blocks. in example, the messages
   "Hi, :-)" and "How are you?" will result in the same
-  size 128 byte ciphertext. messages greater than 128
-  bytes will be padded to meet the full 128 byte block.
+  size 256 byte ciphertext. messages greater than 256
+  bytes will be padded to meet the full 256 byte block.
   the tradeoff here is a small additional overhead for
   considerably stronger security.
 
