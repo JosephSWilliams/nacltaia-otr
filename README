@@ -78,7 +78,8 @@ recommends:
   cython(>=0.17.3), ucspi-tcp, urcd
 
 todo:
-  fixes for pfs multiserver shared keys
+  fixes for pfs multiserver shared keys.
+  workarounds for chmod and chown (thanks keiko)
 
 amd64:
   # i've included some preinstall scripts to
