@@ -84,8 +84,6 @@ while 1:
 
     elif dst in os.listdir('chnkey/'):
 
-      time.sleep(1) # ensure 1 second increment
-
       m      = re.split(' +:?',buffer,2)[2]
       m     += '\n' + array.array('B',[rR(0,256) for i in range(0,256-(len(m)+1+16)%256)]).tostring()
       n      = nacltaia.taia_now()
