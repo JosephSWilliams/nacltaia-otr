@@ -112,7 +112,7 @@ install:
   printf $seckey > crypto/seckey
 
   find crypto/ -type d -exec chmod 755 {} \;
-  find crypto/ -type d -exec chmod 666 {} \;
+  find crypto/ -type f -exec chmod 600 {} \;
   chown nacltaia-otr crypto/ -R
 
   ./newsessiongen crypto/
@@ -126,7 +126,7 @@ adding crypto:
   printf $pubkey > crypto/dstkey/$nick
 
   find crypto/ -type d -exec chmod 755 {} \;
-  find crypto/ -type d -exec chmod 666 {} \;
+  find crypto/ -type f -exec chmod 600 {} \;
   chown nacltaia-otr crypto/ -R
 
   ./newsessiongen crypto/
@@ -143,7 +143,7 @@ adding crypto:
   printf $seckey > crypto/chnkey/$channel
 
   find crypto/ -type d -exec chmod 755 {} \;
-  find crypto/ -type d -exec chmod 666 {} \;
+  find crypto/ -type f -exec chmod 600 {} \;
   chown nacltaia-otr crypto/ -R
 
 adding signatures:
@@ -160,7 +160,7 @@ adding signatures:
     printf $seckey > crypto/sign/$channel/seckey
 
     find crypto/ -type d -exec chmod 755 {} \;
-    find crypto/ -type d -exec chmod 666 {} \;
+    find crypto/ -type f -exec chmod 600 {} \;
     chown nacltaia-otr crypto/ -R
 
   # enforcing remote signatures:
@@ -170,7 +170,7 @@ adding signatures:
     printf $pubkey > crypto/unsign/$channel/$nick
 
     find crypto/ -type d -exec chmod 755 {} \;
-    find crypto/ -type d -exec chmod 666 {} \;
+    find crypto/ -type f -exec chmod 600 {} \;
     chown nacltaia-otr crypto/ -R
 
 perfect forward secrecy:
