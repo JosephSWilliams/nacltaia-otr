@@ -111,7 +111,11 @@ install:
   printf $pubkey > crypto/pubkey
   printf $seckey > crypto/seckey
 
+  find crypto/ -type d -exec chmod 755 {} \;
+  find crypto/ -type d -exec chmod 666 {} \;
   chown nacltaia-otr crypto/ -R
+
+  ./newsessiongen crypto/
 
 adding crypto:
   # [security] $nick should be lowercase
@@ -121,10 +125,11 @@ adding crypto:
 
   printf $pubkey > crypto/dstkey/$nick
 
-  ./newsessiongen crypto/
-
-  chmod 777 crypto/ -R
+  find crypto/ -type d -exec chmod 755 {} \;
+  find crypto/ -type d -exec chmod 666 {} \;
   chown nacltaia-otr crypto/ -R
+
+  ./newsessiongen crypto/
 
   # [security] $channel should be lowercase
   # with no hashtag. $nick should be
@@ -137,7 +142,8 @@ adding crypto:
 
   printf $seckey > crypto/chnkey/$channel
 
-  chmod 777 crypto/ -R
+  find crypto/ -type d -exec chmod 755 {} \;
+  find crypto/ -type d -exec chmod 666 {} \;
   chown nacltaia-otr crypto/ -R
 
 adding signatures:
@@ -153,7 +159,8 @@ adding signatures:
     printf $pubkey > crypto/sign/$channel/pubkey
     printf $seckey > crypto/sign/$channel/seckey
 
-    chmod 777 crypto/ -R
+    find crypto/ -type d -exec chmod 755 {} \;
+    find crypto/ -type d -exec chmod 666 {} \;
     chown nacltaia-otr crypto/ -R
 
   # enforcing remote signatures:
@@ -162,7 +169,8 @@ adding signatures:
 
     printf $pubkey > crypto/unsign/$channel/$nick
 
-    chmod 777 crypto/ -R
+    find crypto/ -type d -exec chmod 755 {} \;
+    find crypto/ -type d -exec chmod 666 {} \;
     chown nacltaia-otr crypto/ -R
 
 perfect forward secrecy:
