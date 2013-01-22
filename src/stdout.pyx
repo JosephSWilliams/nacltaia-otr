@@ -208,7 +208,7 @@ while 1:
 
       m = base91a.decode(re.split(' +:?',buffer,3)[3])
 
-      if m and m[16:24] == '\x00\x00\x00\x00\x00\x00\x00\x00':
+      if m[16:24] == '\x00\x00\x00\x00\x00\x00\x00\x00':
 
         n  = m[:24]
         pk = m[24:56]
@@ -242,12 +242,12 @@ while 1:
   elif re.search('^:['+RE+'.]+ +322 +['+RE+']+ +#['+RE+']+ ([0-9]+)? +:?.*$',buffer.upper()):
 
     dst = re.split(' +',buffer,4)[3].lower()[1:]
+    m   = re.split(' +:?',buffer,4)[4]
+    m   = re.split('([0-9]+)? +:?',m,2)[len(re.split('([0-9]+)? +:?',m,2))-1]
 
     if dst in os.listdir('chnkey/'):
 
-      c = re.split(' +:?',buffer,4)[4]
-      c = re.split('([0-9]+)? +:?',c,2)[len(re.split('([0-9]+)? +:?',c,2))-1]
-      c = base91a.decode(c)
+      c = base91a.decode(m)
 
       c = str() if c == 0 else c
 
@@ -266,31 +266,51 @@ while 1:
         m  = str() if m == 0 else m
         m  = m[24:]
 
-      if re.search('^:['+RE+'.]+ +322 +['+RE+']+ +#['+RE+']+ +:?.*$',buffer.upper()):
+    elif len(m) >= 56 + 64 and not ' ' in m:
 
-        buffer = re.split(' +',buffer,1)[0] \
-               + ' ' \
-               + re.split(' +',buffer,2)[1] \
-               + ' ' \
-               + re.split(' +',buffer,3)[2] \
-               + ' ' \
-               + re.split(' +',buffer,4)[3] \
-               + ' :' \
-               + m.split('\n',1)[0]
+      m = base91a.decode(m)
 
-      elif re.search('^:['+RE+'.]+ +322 +['+RE+']+ +#['+RE+']+ ([0-9]+) +:?.*$',buffer.upper()):
+      if m[16:24] == '\x00\x00\x00\x00\x00\x00\x00\x00':
+        pk = m[24:56]
+        n  = m[:24]
+        m  = nacltaia.crypto_sign_open(m[56:],pk)
+        m  = str() if m == 0 else m
+        m  = m[24:]
 
-        buffer = re.split(' +',buffer,1)[0] \
-               + ' ' \
-               + re.split(' +',buffer,2)[1] \
-               + ' ' \
-               + re.split(' +',buffer,3)[2] \
-               + ' ' \
-               + re.split(' +',buffer,4)[3] \
-               + ' ' \
-               + re.split(' +',buffer,5)[4] \
-               + ' :' \
-               + m.split('\n',1)[0]
+      else:
+        m = re.split(' +:?',buffer,4)[4]
+        m = re.split('([0-9]+)? +:?',m,2)[len(re.split('([0-9]+)? +:?',m,2))-1]
+
+    else:
+      m = re.split(' +:?',buffer,4)[4]
+      m = re.split('([0-9]+)? +:?',m,2)[len(re.split('([0-9]+)? +:?',m,2))-1]
+
+
+    if re.search('^:['+RE+'.]+ +322 +['+RE+']+ +#['+RE+']+ +:?.*$',buffer.upper()):
+
+      buffer = re.split(' +',buffer,1)[0] \
+             + ' ' \
+             + re.split(' +',buffer,2)[1] \
+             + ' ' \
+             + re.split(' +',buffer,3)[2] \
+             + ' ' \
+             + re.split(' +',buffer,4)[3] \
+             + ' :' \
+             + m.split('\n',1)[0]
+
+    elif re.search('^:['+RE+'.]+ +322 +['+RE+']+ +#['+RE+']+ ([0-9]+) +:?.*$',buffer.upper()):
+
+      buffer = re.split(' +',buffer,1)[0] \
+             + ' ' \
+             + re.split(' +',buffer,2)[1] \
+             + ' ' \
+             + re.split(' +',buffer,3)[2] \
+             + ' ' \
+             + re.split(' +',buffer,4)[3] \
+             + ' ' \
+             + re.split(' +',buffer,5)[4] \
+             + ' :' \
+             + m.split('\n',1)[0]
 
   buffer = codecs.ascii_encode(unicodedata.normalize('NFKD',unicode(buffer,'utf-8','replace')),'ignore')[0]
   buffer = re.sub('[\x02\x0f]','',buffer)
