@@ -285,20 +285,10 @@ while 1:
       m = re.split(' +:?',buffer,4)[4]
       m = re.split('([0-9]+)? +:?',m,2)[len(re.split('([0-9]+)? +:?',m,2))-1]
 
+    if re.search('^:['+RE+'.]+ +322 +['+RE+']+ +#['+RE+']+ ([0-9]+) +:?.*$',buffer.upper()):
 
-    if re.search('^:['+RE+'.]+ +322 +['+RE+']+ +#['+RE+']+ +:?.*$',buffer.upper()):
-
-      buffer = re.split(' +',buffer,1)[0] \
-             + ' ' \
-             + re.split(' +',buffer,2)[1] \
-             + ' ' \
-             + re.split(' +',buffer,3)[2] \
-             + ' ' \
-             + re.split(' +',buffer,4)[3] \
-             + ' :' \
-             + m.split('\n',1)[0]
-
-    elif re.search('^:['+RE+'.]+ +322 +['+RE+']+ +#['+RE+']+ ([0-9]+) +:?.*$',buffer.upper()):
+      if len(re.split(' +:?',buffer,6)) > 6:
+        m = re.split(' +:?',buffer,6)[5] + ' '
 
       buffer = re.split(' +',buffer,1)[0] \
              + ' ' \
@@ -309,6 +299,18 @@ while 1:
              + re.split(' +',buffer,4)[3] \
              + ' ' \
              + re.split(' +',buffer,5)[4] \
+             + ' :' \
+             + m.split('\n',1)[0]
+
+    elif re.search('^:['+RE+'.]+ +322 +['+RE+']+ +#['+RE+']+ +:?.*$',buffer.upper()):
+
+      buffer = re.split(' +',buffer,1)[0] \
+             + ' ' \
+             + re.split(' +',buffer,2)[1] \
+             + ' ' \
+             + re.split(' +',buffer,3)[2] \
+             + ' ' \
+             + re.split(' +',buffer,4)[3] \
              + ' :' \
              + m.split('\n',1)[0]
 
