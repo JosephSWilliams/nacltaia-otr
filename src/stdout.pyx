@@ -14,8 +14,9 @@ os.chroot(os.getcwd())
 os.setuid(uid)
 del uid
 
-taias = dict()
-RE    = 'a-zA-Z0-9^(\)\-_{\}[\]|'
+taias      = dict()
+RE         = 'a-zA-Z0-9^(\)\-_{\}[\]|'
+TAIA_FRAME = 64
 
 def oktaia(n,taia):
   taia     = taia[:16]
@@ -151,13 +152,13 @@ while 1:
 
           taias[src] = taia
 
-        elif not oktaia(32,taia):
+        elif not oktaia(TAIA_FRAME,taia):
           continue
 
       elif dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'):
         continue
 
-      elif not oktaia(32,taia):
+      elif not oktaia(TAIA_FRAME,taia):
         continue
 
       buffer = re.split(' +',buffer,1)[0] \
@@ -225,7 +226,7 @@ while 1:
 
         taia = binascii.hexlify(n[:16])
 
-        if not oktaia(32,taia):
+        if not oktaia(TAIA_FRAME,taia):
           continue
 
       else:
@@ -239,11 +240,11 @@ while 1:
              + ' :' \
              + m.split('\n',1)[0]
 
-  elif re.search('^:['+RE+'.]+ +3[23]2 +['+RE+']+ +#['+RE+']+ ([0-9]+)? +:?.*$',buffer.upper()):
+  elif re.search('^:['+RE+'.]+ +((322)|(332)) +['+RE+']+ +#['+RE+']+ ?([0-9]+)? +:?.*$',buffer.upper()):
 
     dst = re.split(' +',buffer,4)[3].lower()[1:]
-    m   = re.split(' +:?',buffer,4)[4]
-    m   = re.split('([0-9]+)? +:?',m,2)[len(re.split('([0-9]+)? +:?',m,2))-1]
+    cmd = re.split(' +',buffer,2)[1]
+    m   = re.split('\[|]',buffer,2)[2][1:] if cmd == '322' else re.split(' +:?',buffer,4)[4]
 
     if dst in os.listdir('chnkey/'):
 
@@ -278,17 +279,14 @@ while 1:
         m  = m[24:]
 
       else:
-        m = re.split(' +:?',buffer,4)[4]
-        m = re.split('([0-9]+)? +:?',m,2)[len(re.split('([0-9]+)? +:?',m,2))-1]
+        m = re.split('\[|]',buffer,2)[2][1:] if cmd == '322' else re.split(' +:?',buffer,4)[4]
 
     else:
-      m = re.split(' +:?',buffer,4)[4]
-      m = re.split('([0-9]+)? +:?',m,2)[len(re.split('([0-9]+)? +:?',m,2))-1]
+      m = re.split('\[|]',buffer,2)[2][1:] if cmd == '322' else re.split(' +:?',buffer,4)[4]
 
-    if re.search('^:['+RE+'.]+ +322 +['+RE+']+ +#['+RE+']+ ([0-9]+) +:?.*$',buffer.upper()):
+    if cmd == '322':
 
-      if len( re.split(' +:?',buffer,6)) > 6:
-          m = re.split(' +:?',buffer,6)[5] + ' '
+      m = '[' + re.split('\[|]',buffer,2)[1] + '] ' + m
 
       buffer = re.split(' +',buffer,1)[0] \
              + ' ' \
@@ -302,7 +300,7 @@ while 1:
              + ' :' \
              + m.split('\n',1)[0]
 
-    elif re.search('^:['+RE+'.]+ +332 +['+RE+']+ +#['+RE+']+ +:?.*$',buffer.upper()):
+    elif cmd == '332':
 
       buffer = re.split(' +',buffer,1)[0] \
              + ' ' \
