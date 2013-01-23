@@ -239,7 +239,7 @@ while 1:
              + ' :' \
              + m.split('\n',1)[0]
 
-  elif re.search('^:['+RE+'.]+ +322 +['+RE+']+ +#['+RE+']+ ([0-9]+)? +:?.*$',buffer.upper()):
+  elif re.search('^:['+RE+'.]+ +3[23]2 +['+RE+']+ +#['+RE+']+ ([0-9]+)? +:?.*$',buffer.upper()):
 
     dst = re.split(' +',buffer,4)[3].lower()[1:]
     m   = re.split(' +:?',buffer,4)[4]
@@ -287,8 +287,8 @@ while 1:
 
     if re.search('^:['+RE+'.]+ +322 +['+RE+']+ +#['+RE+']+ ([0-9]+) +:?.*$',buffer.upper()):
 
-      if len(re.split(' +:?',buffer,6)) > 6:
-        m = re.split(' +:?',buffer,6)[5] + ' '
+      if len( re.split(' +:?',buffer,6)) > 6:
+          m = re.split(' +:?',buffer,6)[5] + ' '
 
       buffer = re.split(' +',buffer,1)[0] \
              + ' ' \
@@ -302,7 +302,7 @@ while 1:
              + ' :' \
              + m.split('\n',1)[0]
 
-    elif re.search('^:['+RE+'.]+ +322 +['+RE+']+ +#['+RE+']+ +:?.*$',buffer.upper()):
+    elif re.search('^:['+RE+'.]+ +332 +['+RE+']+ +#['+RE+']+ +:?.*$',buffer.upper()):
 
       buffer = re.split(' +',buffer,1)[0] \
              + ' ' \
