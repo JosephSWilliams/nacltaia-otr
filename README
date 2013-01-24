@@ -81,15 +81,11 @@ todo:
   fixes for pfs multiserver shared keys.
   workarounds for chmod and chown (thanks keiko)
 
-amd64:
-  # i've included some preinstall scripts to
-  # workaround the taia and nacl issues with
-  # shared objects on 64bit architectures.
-
-  ./libtai-amd64.sh
-  ./nacl-amd64.sh
-
 install:
+
+  # necessary for 64 bit architectures
+  ./install-libtai.sh
+  ./install-nacl.sh
 
   useradd nacltaia-otr
 
