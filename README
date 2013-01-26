@@ -107,11 +107,7 @@ install:
   printf $pubkey > crypto/pubkey
   printf $seckey > crypto/seckey
 
-  find crypto/ -type d -exec chmod 700 {} \;
-  find crypto/ -type f -exec chmod 600 {} \;
-  chown nacltaia-otr crypto/ -R
-
-  ./newsessiongen crypto/
+  ./touchcrypto crypto/
 
 adding crypto:
   # [security] $nick should be lowercase
@@ -121,11 +117,7 @@ adding crypto:
 
   printf $pubkey > crypto/dstkey/$nick
 
-  find crypto/ -type d -exec chmod 700 {} \;
-  find crypto/ -type f -exec chmod 600 {} \;
-  chown nacltaia-otr crypto/ -R
-
-  ./newsessiongen crypto/
+  ./touchcrypto crypto/
 
   # [security] $channel should be lowercase
   # with no hashtag. $nick should be
@@ -138,9 +130,7 @@ adding crypto:
 
   printf $seckey > crypto/chnkey/$channel
 
-  find crypto/ -type d -exec chmod 700 {} \;
-  find crypto/ -type f -exec chmod 600 {} \;
-  chown nacltaia-otr crypto/ -R
+  ./touchcrypto crypto/
 
 adding signatures:
   # WARNING: crypto_sign does not provide repudiation
@@ -155,19 +145,13 @@ adding signatures:
     printf $pubkey > crypto/sign/$channel/pubkey
     printf $seckey > crypto/sign/$channel/seckey
 
-    find crypto/ -type d -exec chmod 700 {} \;
-    find crypto/ -type f -exec chmod 600 {} \;
-    chown nacltaia-otr crypto/ -R
-
   # enforcing remote signatures:
 
     mkdir -p crypto/unsign/$channel
 
     printf $pubkey > crypto/unsign/$channel/$nick
 
-    find crypto/ -type d -exec chmod 700 {} \;
-    find crypto/ -type f -exec chmod 600 {} \;
-    chown nacltaia-otr crypto/ -R
+    ./touchcrypto crypto/
 
 perfect forward secrecy:
 
