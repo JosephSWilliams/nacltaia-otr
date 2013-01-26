@@ -120,9 +120,6 @@ while 1:
 
     if dst in os.listdir('chnkey/'):
 
-      if cached(h):
-        continue
-
       c = base91a.decode(m)
 
       if not c:
@@ -168,10 +165,16 @@ while 1:
         elif not oktaia(TAIA_FRAME,taia):
           continue
 
+        elif cached(h):
+          continue
+
       elif dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'):
         continue
 
       elif not oktaia(TAIA_FRAME,taia):
+        continue
+
+      elif cached(h):
         continue
 
       buffer = re.split(' +',buffer,1)[0] \
@@ -226,9 +229,6 @@ while 1:
 
       if m[16:24] == '\x00\x00\x00\x00\x00\x00\x00\x00':
 
-        if cached(h):
-          continue
-
         n  = m[:24]
         pk = m[24:56]
 
@@ -245,6 +245,9 @@ while 1:
         taia = binascii.hexlify(n[:16])
 
         if not oktaia(TAIA_FRAME,taia):
+          continue
+
+        elif cached(h):
           continue
 
       else:
