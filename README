@@ -107,7 +107,7 @@ install:
   printf $pubkey > crypto/pubkey
   printf $seckey > crypto/seckey
 
-  find crypto/ -type d -exec chmod 755 {} \;
+  find crypto/ -type d -exec chmod 700 {} \;
   find crypto/ -type f -exec chmod 600 {} \;
   chown nacltaia-otr crypto/ -R
 
@@ -121,7 +121,7 @@ adding crypto:
 
   printf $pubkey > crypto/dstkey/$nick
 
-  find crypto/ -type d -exec chmod 755 {} \;
+  find crypto/ -type d -exec chmod 700 {} \;
   find crypto/ -type f -exec chmod 600 {} \;
   chown nacltaia-otr crypto/ -R
 
@@ -138,7 +138,7 @@ adding crypto:
 
   printf $seckey > crypto/chnkey/$channel
 
-  find crypto/ -type d -exec chmod 755 {} \;
+  find crypto/ -type d -exec chmod 700 {} \;
   find crypto/ -type f -exec chmod 600 {} \;
   chown nacltaia-otr crypto/ -R
 
@@ -155,7 +155,7 @@ adding signatures:
     printf $pubkey > crypto/sign/$channel/pubkey
     printf $seckey > crypto/sign/$channel/seckey
 
-    find crypto/ -type d -exec chmod 755 {} \;
+    find crypto/ -type d -exec chmod 700 {} \;
     find crypto/ -type f -exec chmod 600 {} \;
     chown nacltaia-otr crypto/ -R
 
@@ -165,7 +165,7 @@ adding signatures:
 
     printf $pubkey > crypto/unsign/$channel/$nick
 
-    find crypto/ -type d -exec chmod 755 {} \;
+    find crypto/ -type d -exec chmod 700 {} \;
     find crypto/ -type f -exec chmod 600 {} \;
     chown nacltaia-otr crypto/ -R
 
