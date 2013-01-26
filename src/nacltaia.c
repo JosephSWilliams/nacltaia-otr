@@ -1,3 +1,4 @@
+#include <nacl/crypto_hash_sha256.h>
 #include <nacl/crypto_secretbox.h>
 #include <nacl/crypto_sign.h>
 #include <nacl/crypto_box.h>
@@ -261,10 +262,10 @@ PyObject *pycrypto_sign(PyObject *self, PyObject *args, PyObject *kw){
   unsigned char *m;
 
   if (!PyArg_ParseTupleAndKeywords(args, kw, "|s#s#:crypto_sign", (char **) kwlist, (char **)&m_string, &m_stringsize, (char **)&sk, &sksize)){
-	  return (PyObject *)0;}
+    return (PyObject *)0;}
 
   if (sksize != crypto_sign_SECRETKEYBYTES){
-	  return Py_BuildValue("i", 0);}
+    return Py_BuildValue("i", 0);}
 
   mlen = m_stringsize;
   m = PyMem_Malloc(mlen + crypto_sign_BYTES);
@@ -292,7 +293,7 @@ PyObject *pycrypto_sign_open(PyObject *self, PyObject *args, PyObject *kw){
     return (PyObject *)0;}
 
   if (pksize != crypto_sign_PUBLICKEYBYTES){
-  	return Py_BuildValue("i", 0);}
+    return Py_BuildValue("i", 0);}
 
   smlen = smsize;
   m = PyMem_Malloc(smlen);
@@ -308,6 +309,19 @@ PyObject *pycrypto_sign_open(PyObject *self, PyObject *args, PyObject *kw){
   PyMem_Free(m);
   return ret;}
 
+PyObject *pycrypto_hash_sha256(PyObject *self, PyObject *args, PyObject *kw){
+  char *m;
+  Py_ssize_t msize=0;
+  unsigned char h[crypto_hash_sha256_BYTES];
+  static const char *kwlist[] = {"m",0};
+
+  if (!PyArg_ParseTupleAndKeywords(args, kw, "|s#:crypto_hash_sha256", (char **)kwlist, &m, &msize)){
+    return (PyObject *)0;}
+
+  crypto_hash_sha256(h, (const unsigned char *)m, msize);
+
+  return PyBytes_FromStringAndSize((char *)h, crypto_hash_sha256_BYTES);}
+
 static PyMethodDef Module_methods[] = {
   {"nacltaia",             pynacltaia,             METH_NOARGS},
   {"taia_now",             pytaia_now,             METH_NOARGS},
@@ -319,6 +333,7 @@ static PyMethodDef Module_methods[] = {
   {"crypto_sign_keypair",  pycrypto_sign_keypair,  METH_NOARGS},
   {"crypto_secretbox",     pycrypto_secretbox,     METH_VARARGS|METH_KEYWORDS},
   {"crypto_secretbox_open",pycrypto_secretbox_open,METH_VARARGS|METH_KEYWORDS},
+  {"crypto_hash_sha256"   ,pycrypto_hash_sha256   ,METH_VARARGS|METH_KEYWORDS},
   {NULL, NULL}};
 
 void initnacltaia(){
@@ -350,3 +365,6 @@ void initcrypto_secretbox(){
 
 void initcrypto_secretbox_open(){
   (void) Py_InitModule("crypto_secretbox_open", Module_methods);}
+
+void initcrypto_hash_sha256(){
+  (void) Py_InitModule("crypto_hash_sha256", Module_methods);}

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys, os ; sys.path.append(os.getcwd())
 import unicodedata
+import collections
 import binascii
 import nacltaia
 import base91a
@@ -14,9 +15,11 @@ os.chroot(os.getcwd())
 os.setuid(uid)
 del uid
 
+TAIA_FRAME = 64
+HASH_LOG   = 128
 taias      = dict()
 RE         = 'a-zA-Z0-9^(\)\-_{\}[\]|'
-TAIA_FRAME = 64
+hashcache  = collections.deque([],HASH_LOG)
 
 def oktaia(n,taia):
   taia     = taia[:16]
@@ -27,6 +30,12 @@ def oksrctaia(taia,taia_now):
   if long(taia,16) <= long(taias[src],16):
     return 1 if taia_now == taias[src] else 0
   return 1
+
+def cached(h):
+  if h in hashcache:
+    return 1
+  hashcache.append(h)
+  return 0
 
 while 1:
 
@@ -107,8 +116,12 @@ while 1:
     src = buffer[1:].split('!',1)[0].lower()
     dst = re.split(' +',buffer,3)[2].lower()[1:]
     m   = re.split(' +:?',buffer,3)[3]
+    h   = nacltaia.crypto_hash_sha256(m)
 
     if dst in os.listdir('chnkey/'):
+
+      if cached(h):
+        continue
 
       c = base91a.decode(m)
 
@@ -207,9 +220,14 @@ while 1:
 
     elif len(m) >= 56 + 64 and not ' ' in m:
 
+      m = re.split(' +:?',buffer,3)[3]
+      h = nacltaia.crypto_hash_sha256(m)
       m = base91a.decode(re.split(' +:?',buffer,3)[3])
 
       if m[16:24] == '\x00\x00\x00\x00\x00\x00\x00\x00':
+
+        if cached(h):
+          continue
 
         n  = m[:24]
         pk = m[24:56]
@@ -320,5 +338,4 @@ while 1:
   buffer = buffer.replace("\\'","'")
   buffer = buffer.replace('\\\\','\\')
 
-  if len(buffer)<=1024:
-    os.write(1,buffer)
+  os.write(1,buffer)
