@@ -55,7 +55,7 @@ while 1:
 
   taia_now = binascii.hexlify(nacltaia.taia_now())
 
-  if re.search('^:['+RE+']+!['+RE+'.]+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +['+RE+']+ +:?.*$',buffer.upper()):
+  if re.search('^:['+RE+']+![~'+RE+'.]+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +['+RE+']+ +:?.*$',buffer.upper()):
 
     src = buffer[1:].split('!',1)[0].lower()
 
@@ -111,7 +111,7 @@ while 1:
                + ' :' \
                + m.split('\n',1)[0]
 
-  elif re.search('^:['+RE+']+!['+RE+'.]+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +#['+RE+']+ +:?.*$',buffer.upper()):
+  elif re.search('^:['+RE+']+![~'+RE+'.]+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +#['+RE+']+ +:?.*$',buffer.upper()):
 
     src = buffer[1:].split('!',1)[0].lower()
     dst = re.split(' +',buffer,3)[2].lower()[1:]
