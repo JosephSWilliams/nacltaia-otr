@@ -6,6 +6,9 @@ import binascii
 import nacltaia
 import base91a
 import codecs
+import select
+import socket
+import time
 import pwd
 import re
 
@@ -14,6 +17,20 @@ os.chdir('crypto/')
 os.chroot(os.getcwd())
 os.setuid(uid)
 del uid
+
+ipc=socket.socket(1,1) # contains potential race condition
+for n in range(0,8):
+  sys.exit(128+111) if n == 8 else 0
+  try:
+    ipc.connect('socket')
+    del n
+    break
+  except:
+    time.sleep(1)
+ipc_POLLIN=select.poll()
+ipc_POLLIN.register(ipc.fileno(),3)
+def ipc_poll():
+  return len(ipc_POLLIN.poll(0))
 
 TAIA_FRAME = 64
 HASH_LOG   = 128
@@ -49,6 +66,12 @@ while 1:
       break
     if byte != '\r':
       buffer+=byte
+
+  while ipc_poll():
+    h = ipc.recv(32)
+    if len(h) < 32:
+      sys.exit(128+32)
+    cached(h)
 
   if re.search('^:cryptoserv',buffer.lower()):
     continue
@@ -336,7 +359,7 @@ while 1:
   buffer = codecs.ascii_encode(unicodedata.normalize('NFKD',unicode(buffer,'utf-8','replace')),'ignore')[0]
   buffer = re.sub('[\x02\x0f]','',buffer)
   buffer = re.sub('\x01(ACTION )?','*',buffer) # contains potential irssi bias
-  buffer = re.sub('\x03[0-9][0-9]?(,[0-9][0-9]?)?','',buffer)
+  buffer = re.sub('\x03[0-9]?[0-9]?((?<=[0-9]),[0-9]?[0-9]?)?','',buffer)
   buffer = str({str():buffer})[6:][:len(str({str():buffer})[6:])-2] + '\n'
   buffer = buffer.replace("\\'","'")
   buffer = buffer.replace('\\\\','\\')

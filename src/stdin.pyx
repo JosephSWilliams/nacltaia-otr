@@ -4,6 +4,7 @@ from random import randrange as rR
 import binascii
 import nacltaia
 import base91a
+import socket
 import array
 import time
 import pwd
@@ -14,6 +15,17 @@ os.chdir('crypto/')
 os.chroot(os.getcwd())
 os.setuid(uid)
 del uid
+
+sock=socket.socket(1,1) # contains potential race condition
+if os.path.exists('socket'):
+  time.sleep(1)
+  os.remove('socket')
+sock.bind('socket')
+sock.listen(1)
+ipc=sock.accept()[0]
+os.remove('socket')
+sock.close()
+del sock
 
 RE = 'a-zA-Z0-9^(\)\-_{\}[\]|'
 
@@ -58,6 +70,7 @@ while 1:
   elif re.search('^((PRIVMSG)|(NOTICE)|(TOPIC)) +#['+RE+']+ +:?.*$',buffer.upper()):
 
     dst = re.split(' +:?',buffer,2)[1].lower()[1:]
+    h   = str()
 
     if dst in os.listdir('sign/') and dst in os.listdir('chnkey/'):
 
@@ -75,12 +88,14 @@ while 1:
       k      = binascii.unhexlify(open('chnkey/'+dst,'rb').read(64))
       c      = nacltaia.crypto_secretbox(m,n,k)
       c      = str() if c == 0 else c
+      c      = base91a.encode(n+c)
+      h      = nacltaia.crypto_hash_sha256(c)
 
       buffer = re.split(' +',buffer,1)[0].upper() \
              + ' ' \
              + re.split(' +',buffer,2)[1] \
              + ' :' \
-             + base91a.encode(n+c)
+             + c
 
     elif dst in os.listdir('chnkey/'):
 
@@ -91,12 +106,14 @@ while 1:
       k      = binascii.unhexlify(open('chnkey/'+dst,'rb').read(64))
       c      = nacltaia.crypto_secretbox(m,n,k)
       c      = str() if c == 0 else c
+      c      = base91a.encode(n+c)
+      h      = nacltaia.crypto_hash_sha256(c)
 
       buffer = re.split(' +',buffer,1)[0].upper() \
              + ' ' \
              + re.split(' +',buffer,2)[1] \
              + ' :' \
-             + base91a.encode(n+c)
+             + c
 
     elif dst in os.listdir('sign/'):
 
@@ -108,12 +125,18 @@ while 1:
       sk     = binascii.unhexlify(open('sign/'+dst+'/seckey','rb').read(128))
       m      = nacltaia.crypto_sign(n+m,sk)
       m      = str() if m == 0 else m
-      m      = pk + m
+      m      = base91a.encode(pk+m)
+      h      = nacltaia.crypto_hash_sha256(m)
 
       buffer = re.split(' +',buffer,1)[0].upper() \
              + ' ' \
              + re.split(' +',buffer,2)[1] \
              + ' :' \
-             + base91a.encode(n+m)
+             + m
+
+    try:
+      ipc.send(h) if h else 0
+    except:
+      sys.exit(128+32)
 
   os.write(1,buffer+'\n')
