@@ -184,3 +184,7 @@ ucspi-tcp:
 ucspi-tcp (tor):
   tcpserver 127.0.0.1 6667 tcpclient 127.0.0.1 9050 ./ucspi-socks4aclient irc.crypto.net 6667 ./stdio &
   irssi -c 127.0.0.1
+
+curvecp:
+  tcpserver 127.0.0.1 6667 ./ucspi-server2client curvecpclient irc.crypto.net $pubkey 1.1.5.67 6667 $extension curvecpmessage ./stdio
+  irssi -c 127.0.0.1
