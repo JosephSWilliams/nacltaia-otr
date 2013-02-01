@@ -43,7 +43,9 @@ nacltaia-otr:
   through nacltaia-otr cannot substantiate a sender as
   the source of a message anymore than sending the same
   message in plaintext. it does this while still
-  preventing third-party forgeries.
+  preventing third-party forgeries. this feature is
+  extended for non-signed messages only. signatures are
+  not used by default with any nacltaia-otr encryption.
 
   IRC messages may often contain binary encoding. this
   can allow an attacker to tamper with internal
@@ -53,10 +55,10 @@ nacltaia-otr:
   machine. nacltaia-otr automatically purges all binary
   encoding before it makes it to the IRC client.
 
-  nacltaia-otr provides perfect forward secrecy through
-  the use of session keys. this maintains that even if
-  your private key is compromised, no previous message
-  can be decrypted.
+  PM over nacltaia-otr provides perfect forward secrecy
+  through the use of session keys. this maintains that
+  even if your private key is compromised, no previous
+  message can be decrypted.
 
   nacltaia-otr has no handshakes or acknowledgements.
   when you receive a new session key from a friend or
@@ -70,6 +72,11 @@ nacltaia-otr:
   before your nacltaia-otr knows, they will receive
   a message from CryptoServ!nacltaia-otr@service.
   they can simply request you resend your message.
+
+  nacltaia-otr has no builtin methods for logging. if
+  your IRC client of choice doesn't write logs to HDD
+  you don't have to worry about removing or shredding
+  previous messages from your contacts.
 
 thanks:
   much thanks to Ivo Smits for help with 64bit
@@ -89,10 +96,6 @@ depends:
 
 recommends:
   cython(>=0.17.3), ucspi-tcp, urcd
-
-todo:
-  fixes for pfs multiserver shared keys.
-  workarounds for chmod and chown (thanks keiko)
 
 install:
 
