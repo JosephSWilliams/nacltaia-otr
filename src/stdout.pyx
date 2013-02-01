@@ -42,7 +42,9 @@ def oktaia(n,taia):
   taia_now = base91a.hex(nacltaia.taia_now()[:8])
   return 1 if abs( long(taia_now,16) - long(taia,16) ) < n else 0
 
-def oksrctaia(taia,taia_now):
+def oksrctaia(n,taia,taia_now):
+  if abs( long(taia_now[:16],16) - long(taia[:16],16) ) > n:
+    return 0
   if long(taia,16) <= long(taias[src],16):
     return 1 if taia_now == taias[src] else 0
   return 1
@@ -111,7 +113,7 @@ while 1:
       if not src in taias.keys():
         taias[src] = taia_now
 
-      if not oksrctaia(taia,taia_now):
+      if not oksrctaia(TAIA_FRAME,taia,taia_now):
         continue
 
       if open('tmpkey/'+src+'/tk','rb').read(32) != pk:
@@ -178,7 +180,7 @@ while 1:
           if not src in taias.keys():
             taias[src] = taia_now
 
-          if not oksrctaia(taia,taia_now):
+          if not oksrctaia(TAIA_FRAME,taia,taia_now):
             continue
 
           taias[src] = taia
@@ -229,7 +231,7 @@ while 1:
       if not src in taias.keys():
         taias[src] = taia_now
 
-      if not oksrctaia(taia,taia_now):
+      if not oksrctaia(TAIA_FRAME,taia,taia_now):
         continue
 
       taias[src] = taia
