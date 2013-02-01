@@ -108,7 +108,7 @@ PyObject *pyhex(PyObject *self, PyObject *args, PyObject *kw){
   int l = 0; int i = 0; int n = 0;
 
   for(i=0;i<dlen;++i){
-    out[l] = hex[data[i]/16]; ++l;
+    out[l] = hex[data[i]>>4]; ++l;
     out[l] = hex[data[i]%16]; ++l;}
 
   PyObject *ret;
@@ -154,10 +154,10 @@ PyObject *pyunhex(PyObject *self, PyObject *args, PyObject *kw){
     i=-1;
     while(i<16){++i;
       if (hex[i]==data[n]){
-        out[l] = out[l]*16+i; ++l;
+        out[l] = (out[l]<<4)+i; ++l;
         break;}
       if (HEX[i]==data[n]){
-        out[l] = out[l]*16+i; ++l;
+        out[l] = (out[l]<<4)+i; ++l;
         break;}}
     if (i==16){
       PyMem_Free(out);

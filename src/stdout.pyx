@@ -120,8 +120,7 @@ while 1:
       taias[src] = taia
 
       if m == 0:
-        buffer = ':CryptoServ!nacltaia-otr@service NOTICE ' + re.split(' +',buffer,3)[2] + ' :unable to decrypt message from ' + src + '\a\n'
-        os.write(1,buffer)
+        os.write(1,':CryptoServ!nacltaia-otr@service NOTICE ' + re.split(' +',buffer,3)[2] + ' :unable to decrypt message from ' + src + '\a\n')
         continue
 
       else:
