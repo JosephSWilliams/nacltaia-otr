@@ -105,7 +105,7 @@ PyObject *pyhex(PyObject *self, PyObject *args, PyObject *kw){
     return PyErr_NoMemory();
 
   unsigned char hex[16] = {"0123456789ABCDEF"};
-  int l = 0; int i = 0; int n = 0;
+  int l = 0; int i = 0;
 
   for(i=0;i<dlen;++i){
     out[l] = hex[data[i]>>4]; ++l;
