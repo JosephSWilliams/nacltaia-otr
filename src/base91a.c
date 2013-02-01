@@ -89,14 +89,102 @@ PyObject *pydecode(PyObject *self, PyObject *args, PyObject *kw){
   PyMem_Free(out);
   return ret;}
 
+
+PyObject *pyhex(PyObject *self, PyObject *args, PyObject *kw){
+  unsigned char *data;
+  Py_ssize_t dlen=0;
+  static const char *kwlist[] = {"data",0};
+
+  if (!PyArg_ParseTupleAndKeywords(args, kw, "|s#:", (char **)kwlist, &data, &dlen)){
+    return (PyObject *)0;}
+
+  unsigned char *out;
+  out = PyMem_Malloc(dlen*2);
+
+  if (!out)
+    return PyErr_NoMemory();
+
+  unsigned char hex[16] = {"0123456789ABCDEF"};
+  int l = 0; int i = 0; int n = 0;
+
+  for(i=0;i<dlen;++i){
+    out[l] = hex[data[i]/16]; ++l;
+    out[l] = hex[data[i]%16]; ++l;}
+
+  PyObject *ret;
+  ret = PyBytes_FromStringAndSize(out,l);
+  PyMem_Free(out);
+  return ret;}
+
+PyObject *pyunhex(PyObject *self, PyObject *args, PyObject *kw){
+  unsigned char *data;
+  Py_ssize_t dlen=0;
+  static const char *kwlist[] = {"data",0};
+
+  if (!PyArg_ParseTupleAndKeywords(args, kw, "|s#:", (char **)kwlist, &data, &dlen)){
+    return (PyObject *)0;}
+
+  if (dlen%2)
+    return Py_BuildValue("s", "");
+
+  unsigned char *out;
+  out = PyMem_Malloc(dlen/2);
+
+  if (!out)
+    return PyErr_NoMemory();
+
+  unsigned char hex[16] = {"0123456789abcdef"};
+  unsigned char HEX[16] = {"0123456789ABCDEF"};
+  int l = 0; int i = 0; int n = 0;
+
+  while(n<dlen){
+    i=-1;
+    while(i<16){++i;
+      if (hex[i]==data[n]){
+        out[l] = i;
+        break;}
+      if (HEX[i]==data[n]){
+        out[l] = i;
+        break;}}
+    if (i==16){
+      PyMem_Free(out);
+      return Py_BuildValue("s", "");}
+    ++n;
+
+    i=-1;
+    while(i<16){++i;
+      if (hex[i]==data[n]){
+        out[l] = out[l]*16+i; ++l;
+        break;}
+      if (HEX[i]==data[n]){
+        out[l] = out[l]*16+i; ++l;
+        break;}}
+    if (i==16){
+      PyMem_Free(out);
+      return Py_BuildValue("s", "");}
+    ++n;}
+
+  PyObject *ret;
+  ret = PyBytes_FromStringAndSize(out,l);
+  PyMem_Free(out);
+  return ret;}
+
 static PyMethodDef Module_methods[] = {
   {"base91a", pybase91a, METH_NOARGS},
+  {"hex"    , pyhex    , METH_VARARGS|METH_KEYWORDS},
+  {"unhex"  , pyunhex  , METH_VARARGS|METH_KEYWORDS},
   {"encode" , pyencode , METH_VARARGS|METH_KEYWORDS},
   {"decode" , pydecode , METH_VARARGS|METH_KEYWORDS},
   {NULL, NULL}};
 
 void initbase91a(){
   (void) Py_InitModule("base91a", Module_methods);}
+
+void inithex(){
+  (void) Py_InitModule("hex", Module_methods);}
+
+void initunhex(){
+  (void) Py_InitModule("unhex", Module_methods);}
 
 void initencode(){
   (void) Py_InitModule("encode", Module_methods);}

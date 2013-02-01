@@ -2,7 +2,6 @@
 import sys, os ; sys.path.append(os.getcwd())
 import unicodedata
 import collections
-import binascii
 import nacltaia
 import base91a
 import codecs
@@ -40,7 +39,7 @@ hashcache  = collections.deque([],HASH_LOG)
 
 def oktaia(n,taia):
   taia     = taia[:16]
-  taia_now = binascii.hexlify(nacltaia.taia_now()[:8])
+  taia_now = base91a.hex(nacltaia.taia_now()[:8])
   return 1 if abs( long(taia_now,16) - long(taia,16) ) < n else 0
 
 def oksrctaia(taia,taia_now):
@@ -76,7 +75,7 @@ while 1:
   if re.search('^:cryptoserv',buffer.lower()):
     continue
 
-  taia_now = binascii.hexlify(nacltaia.taia_now())
+  taia_now = base91a.hex(nacltaia.taia_now())
 
   if re.search('^:['+RE+']+![~'+RE+'.]+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +['+RE+']+ +:?.*$',buffer.upper()):
 
@@ -91,15 +90,15 @@ while 1:
 
       n  = c[:24]
       c  = c[24:]
-      pk = binascii.unhexlify(open('dstkey/'+src,'rb').read(64))
-      sk = binascii.unhexlify(open('seckey','rb').read(64))
+      pk = base91a.unhex(open('dstkey/'+src,'rb').read(64))
+      sk = base91a.unhex(open('seckey','rb').read(64))
       c  = nacltaia.crypto_box_open(c,n,pk,sk)
 
       if c == 0:
         continue
 
       m    = 0
-      taia = binascii.hexlify(n[:16])
+      taia = base91a.hex(n[:16])
 
       if len(c) >= 32 + 16:
         pk = c[:32]
@@ -150,13 +149,13 @@ while 1:
 
       n = c[:24]
       c = c[24:]
-      k = binascii.unhexlify(open('chnkey/'+dst,'rb').read(64))
+      k = base91a.unhex(open('chnkey/'+dst,'rb').read(64))
       m = nacltaia.crypto_secretbox_open(c,n,k)
 
       if m == 0:
         continue
 
-      taia = binascii.hexlify(n[:16])
+      taia = base91a.hex(n[:16])
 
       if not long(taia,16) and len(c) >= 32 + 64 + 24:
 
@@ -170,11 +169,11 @@ while 1:
           continue
 
         m    = m[24:]
-        taia = binascii.hexlify(n[16:]) + '0000000000000000'
+        taia = base91a.hex(n[16:]) + '0000000000000000'
 
         if dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'):
 
-          if pk != binascii.unhexlify(open('unsign/'+dst+'/'+src,'rb').read(64)):
+          if pk != base91a.unhex(open('unsign/'+dst+'/'+src,'rb').read(64)):
             continue
 
           if not src in taias.keys():
@@ -223,9 +222,9 @@ while 1:
 
       m = m[24:]
 
-      taia = binascii.hexlify(n[:16])
+      taia = base91a.hex(n[:16])
 
-      if pk != binascii.unhexlify(open('unsign/'+dst+'/'+src,'rb').read(64)):
+      if pk != base91a.unhex(open('unsign/'+dst+'/'+src,'rb').read(64)):
         continue
 
       if not src in taias.keys():
@@ -265,7 +264,7 @@ while 1:
 
         m = m[24:]
 
-        taia = binascii.hexlify(n[:16])
+        taia = base91a.hex(n[:16])
 
         if not oktaia(TAIA_FRAME,taia):
           continue
@@ -298,12 +297,12 @@ while 1:
 
       n = c[:24]
       c = c[24:]
-      k = binascii.unhexlify(open('chnkey/'+dst,'rb').read(64))
+      k = base91a.unhex(open('chnkey/'+dst,'rb').read(64))
       m = nacltaia.crypto_secretbox_open(c,n,k)
 
       m = str() if m == 0 else m
 
-      taia = binascii.hexlify(n[:16])
+      taia = base91a.hex(n[:16])
 
       if len(n) >= 16 and not long(taia,16):
         pk = m[:32]
