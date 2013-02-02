@@ -35,7 +35,7 @@ PyObject *pyencode(PyObject *self, PyObject *args, PyObject *kw){
       out[l] = v / 91 + 33; ++l;}}
   if (n){
     out[l] = b % 91 + 33; ++l;
-    if ((n>7) | (b>90)){
+    if ((n>7)||(b>90)){
       out[l] = b / 91 + 33; ++l;}}
 
   PyObject *ret;
@@ -62,7 +62,7 @@ PyObject *pydecode(PyObject *self, PyObject *args, PyObject *kw){
 
   for(i=0;i<dlen;++i){
     c = data[i] - 33;
-    if ((c<0) | (c>90)){
+    if ((c<0)||(c>90)){
       PyMem_Free(out);
       return Py_BuildValue("s", "");}
     if (v<0)
