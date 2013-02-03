@@ -18,14 +18,14 @@ os.setuid(uid)
 del uid
 
 ipc=socket.socket(1,1) # contains potential race condition
-for n in range(0,8):
+for n in range(0,9):
   sys.exit(128+111) if n == 8 else 0
   try:
     ipc.connect('socket')
     del n
     break
   except:
-    time.sleep(1)
+    time.sleep(0.1)
 ipc_POLLIN=select.poll()
 ipc_POLLIN.register(ipc.fileno(),3)
 def ipc_poll():
