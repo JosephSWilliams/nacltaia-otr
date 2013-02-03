@@ -22,7 +22,7 @@ if len(argv)>1:
       open('tmpkey/'+dst+'/pk','wb').write(rk)
       open('tmpkey/'+dst+'/sk','wb').write(rk)
       p.stdin.write('\n')
-      pk, sk = p.stdout.read(32), p.stdout.read(32)
+    pk, sk = p.stdout.read(32), p.stdout.read(32)
     open('tmpkey/'+dst+'/pk','wb').write(pk)
     open('tmpkey/'+dst+'/sk','wb').write(sk)
   p.stdin.write(str())
