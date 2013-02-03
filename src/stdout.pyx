@@ -37,11 +37,8 @@ taias      = dict()
 RE         = 'a-zA-Z0-9^(\)\-_{\}[\]|'
 hashcache  = collections.deque([],HASH_LOG)
 
-def oktaia(n,taia):
-  return 1 if abs( nacltaia.taia2seconds(nacltaia.taia_now()) - nacltaia.taia2seconds(taia) ) < n else 0
-
 def oksrctaia(n,taia,taia_now):
-  if abs( nacltaia.taia2seconds(nacltaia.taia_now()) - nacltaia.taia2seconds(taia) ) > n:
+  if nacltaia.taia_okseconds(n,nacltaia.taia_now(),taia)<1:
     return 0
   if nacltaia.taia_new(taia,taias[src])<1:
     return 1 if taia_now == taias[src] else 0
@@ -156,7 +153,7 @@ while 1:
 
       taia = n[:16]
 
-      if not nacltaia.taia2seconds(taia) and len(c) >= 32 + 64 + 24:
+      if taia == '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' and len(c) >= 32 + 64 + 24:
 
         pk = m[:32]
         m  = nacltaia.crypto_sign_open(m[32:],pk)
@@ -183,7 +180,7 @@ while 1:
 
           taias[src] = taia
 
-        elif not oktaia(OK_SECONDS,taia):
+        elif nacltaia.taia_okseconds(OK_SECONDS,nacltaia.taia_now(),taia)<1:
           continue
 
         elif cached(h):
@@ -192,7 +189,7 @@ while 1:
       elif dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'):
         continue
 
-      elif not oktaia(OK_SECONDS,taia):
+      elif nacltaia.taia_okseconds(OK_SECONDS,nacltaia.taia_now(),taia)<1:
         continue
 
       elif cached(h):
@@ -265,7 +262,7 @@ while 1:
 
         taia = n[:16]
 
-        if not oktaia(OK_SECONDS,taia):
+        if nacltaia.taia_okseconds(OK_SECONDS,nacltaia.taia_now(),taia)<1:
           continue
 
         elif cached(h):
@@ -303,7 +300,7 @@ while 1:
 
       taia = n[:16]
 
-      if len(n) >= 16 and not nacltaia.taia2seconds(taia):
+      if len(n) >= 16 and taia == '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00':
         pk = m[:32]
         m  = nacltaia.crypto_sign_open(m[32:],pk)
         m  = str() if m == 0 else m

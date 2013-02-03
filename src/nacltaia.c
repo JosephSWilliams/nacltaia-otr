@@ -23,30 +23,40 @@ PyObject *pytaia_now(PyObject *self){
   PyMem_Free(tpad);
   return ret;}
 
-PyObject *pytaia2seconds(PyObject *self, PyObject *args, PyObject *kw){
-  unsigned char *t;
-  Py_ssize_t tsize=0;
-  unsigned char h[crypto_hash_sha256_BYTES];
-  static const char *kwlist[] = {"t",0};
+PyObject *pytaia_okseconds(PyObject *self, PyObject *args, PyObject *kw){
+  unsigned char *t, *u;
+  Py_ssize_t tsize=0, usize=0, n=0;
+  static const char *kwlist[] = {"n","t","u",0};
 
-  if (!PyArg_ParseTupleAndKeywords(args, kw, "|s#:taia2seconds", (char **)kwlist, &t, &tsize)){
+  if (!PyArg_ParseTupleAndKeywords(args, kw,
+    #if PY_VERSION_HEX < 0x02050000
+      "|is#s#:taia_okseconds",
+    #else
+      "|ns#s#:taia_okseconds",
+    #endif
+      (char **)kwlist, &n, &t, &tsize, &u, &usize)){
     return (PyObject *)0;}
 
-  if (tsize>8)
-    tsize = 8;
+  if ((tsize<8)||(usize<tsize))
+    return Py_BuildValue("i", -1);
 
-  int l = tsize, i; long long seconds = 0;
+  int l = 8, i; long long s1 = 0, s2 = 0;
 
-  if (t[0]<128){ /* prevent overflow */
-    for(i=0;i<tsize;++i)
-      seconds += (long long)t[i] << (long long)(8 *--l);}
+  if ((t[0]<128)&&(u[0]<128)){ /* prevent overflow */
+    for(i=0;i<8;++i){
+      s1 += (long long)t[i] << (long long)(8 * --l);
+      s2 += (long long)u[i] << (long long)(8 *   l);}}
+  else
+    return Py_BuildValue("i", -1);
 
-  return Py_BuildValue("L", seconds);}
+  if (llabs(s1 - s2) > n)
+    return Py_BuildValue("i", 0);
+
+  return Py_BuildValue("i", 1);}
 
 PyObject *pytaia_new(PyObject *self, PyObject *args, PyObject *kw){
   unsigned char *t, *u;
   Py_ssize_t tsize=0, usize=0;
-  unsigned char h[crypto_hash_sha256_BYTES];
   static const char *kwlist[] = {"t", "u", 0};
 
   if (!PyArg_ParseTupleAndKeywords(args, kw, "|s#s#:taia_new", (char **)kwlist, &t, &tsize, &u, &usize)){
@@ -368,7 +378,7 @@ static PyMethodDef Module_methods[] = {
   {"nacltaia",             pynacltaia,             METH_NOARGS},
   {"taia_now",             pytaia_now,             METH_NOARGS},
   {"taia_new",             pytaia_new,             METH_VARARGS|METH_KEYWORDS},
-  {"taia2seconds",         pytaia2seconds,         METH_VARARGS|METH_KEYWORDS},
+  {"taia_okseconds",       pytaia_okseconds,       METH_VARARGS|METH_KEYWORDS},
   {"crypto_box",           pycrypto_box,           METH_VARARGS|METH_KEYWORDS},
   {"crypto_box_open",      pycrypto_box_open,      METH_VARARGS|METH_KEYWORDS},
   {"crypto_box_keypair",   pycrypto_box_keypair,   METH_NOARGS},
@@ -389,8 +399,8 @@ void inittaia_now(){
 void inittaia_new(){
   (void) Py_InitModule("taia_new", Module_methods);}
 
-void inittaia2seconds(){
-  (void) Py_InitModule("taia2seconds", Module_methods);}
+void inittaia_okseconds(){
+  (void) Py_InitModule("taia_okseconds", Module_methods);}
 
 void initcrypto_box(){
   (void) Py_InitModule("crypto_box", Module_methods);}
