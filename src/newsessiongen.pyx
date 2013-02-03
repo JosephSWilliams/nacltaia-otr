@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from binascii import hexlify as HEX
 from random import randrange as rR
 from subprocess import *
 from array import array
@@ -8,10 +7,9 @@ from sys import *
 import pwd
 import os
 
-USAGE=argv[0]+': </path/to/crypto> <iteration>'
-try:
+if len(argv)>1:
   uid=pwd.getpwnam('nacltaia-otr')[2]
-  p=Popen(['./crypto_box_keypair'],stdin=-1,stdout=-1)
+  p=Popen(['./crypto_box_keypair'],stdin=-1,stdout=-1) # cannot chroot and read /dev/urandom
   os.chdir(argv[1])
   os.chroot(os.getcwd())
   os.setuid(uid)
@@ -28,7 +26,6 @@ try:
     open('tmpkey/'+dst+'/pk','wb').write(pk)
     open('tmpkey/'+dst+'/sk','wb').write(sk)
   p.stdin.write(str())
-  t=int(argv[2]) if len(argv)>2 else 1
-  sleep(t)
-except:
-  exit(USAGE)
+  sleep(int(argv[2])) if len(argv)>2 else sleep(1)
+else:
+  exit(argv[0]+': </path/to/crypto> <iteration>')
