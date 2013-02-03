@@ -90,6 +90,10 @@ thanks:
   get to the bottom of amd64 issues through trial
   and error.
 
+todo:
+  patch nacltaia.taia_okseconds(...) before the next
+  146,000,000,000 years.
+
 depends:
   python(>=2.6), python-dev(>=2.6), nacl, libtai,
   gcc, sh
