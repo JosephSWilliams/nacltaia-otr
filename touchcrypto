@@ -1,5 +1,6 @@
 #!/bin/sh
 if [ $(id -u) != 0 ] || [ -z $1 ] || ! [ -e $1 ]; then echo "Usage: as root: $0: </path/to/crypto/>" 1>&2 ; exit 64; fi
+rm -f $1/socket
 find $1 -type d -exec chmod 700 {} \;
 find $1 -type f -exec chmod 600 {} \;
 chown nacltaia-otr $1 -R

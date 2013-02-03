@@ -16,9 +16,6 @@ os.setuid(uid)
 del uid
 
 sock=socket.socket(1,1) # contains potential race condition
-if os.path.exists('socket'):
-  time.sleep(1)
-  os.remove('socket')
 sock.bind('socket')
 sock.listen(1)
 ipc=sock.accept()[0]
