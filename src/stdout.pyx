@@ -59,11 +59,11 @@ while 1:
 
   while 1:
     byte = os.read(0,1)
-    if not byte or len(buffer)>1024:
+    if not byte:
       sys.exit(0)
     if byte == '\n':
       break
-    if byte != '\r':
+    if byte != '\r' and len(buffer)<1024:
       buffer+=byte
 
   while ipc_poll():
