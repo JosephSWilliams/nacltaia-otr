@@ -43,13 +43,13 @@ PyObject *pytaia2seconds(PyObject *self, PyObject *args, PyObject *kw){
 
   return Py_BuildValue("L", seconds);}
 
-PyObject *pytaia_less(PyObject *self, PyObject *args, PyObject *kw){ /* workaround c implementation */
+PyObject *pytaia_new(PyObject *self, PyObject *args, PyObject *kw){
   unsigned char *t, *u;
   Py_ssize_t tsize=0, usize=0;
   unsigned char h[crypto_hash_sha256_BYTES];
   static const char *kwlist[] = {"t", "u", 0};
 
-  if (!PyArg_ParseTupleAndKeywords(args, kw, "|s#s#:taia_less", (char **)kwlist, &t, &tsize, &u, &usize)){
+  if (!PyArg_ParseTupleAndKeywords(args, kw, "|s#s#:taia_new", (char **)kwlist, &t, &tsize, &u, &usize)){
     return (PyObject *)0;}
 
   if ((tsize<16)||(usize<16))
@@ -57,11 +57,11 @@ PyObject *pytaia_less(PyObject *self, PyObject *args, PyObject *kw){ /* workarou
 
   int i;
 
-  for(i=0;i<16;++i){
+  for(i=0;i<16;++i){ /* simple implementation of taia_less */
     if (t[i]<u[i])
-      return Py_BuildValue("i", 1);
+      return Py_BuildValue("i", 0);
     if (t[i]>u[i])
-      return Py_BuildValue("i", 0);}
+      return Py_BuildValue("i", 1);}
 
   return Py_BuildValue("i", 0);}
 
@@ -367,7 +367,7 @@ PyObject *pycrypto_hash_sha256(PyObject *self, PyObject *args, PyObject *kw){
 static PyMethodDef Module_methods[] = {
   {"nacltaia",             pynacltaia,             METH_NOARGS},
   {"taia_now",             pytaia_now,             METH_NOARGS},
-  {"taia_less",            pytaia_less,            METH_VARARGS|METH_KEYWORDS},
+  {"taia_new",             pytaia_new,             METH_VARARGS|METH_KEYWORDS},
   {"taia2seconds",         pytaia2seconds,         METH_VARARGS|METH_KEYWORDS},
   {"crypto_box",           pycrypto_box,           METH_VARARGS|METH_KEYWORDS},
   {"crypto_box_open",      pycrypto_box_open,      METH_VARARGS|METH_KEYWORDS},
@@ -386,8 +386,8 @@ void initnacltaia(){
 void inittaia_now(){
   (void) Py_InitModule("taia_now", Module_methods);}
 
-void inittaia_less(){
-  (void) Py_InitModule("taia_less", Module_methods);}
+void inittaia_new(){
+  (void) Py_InitModule("taia_new", Module_methods);}
 
 void inittaia2seconds(){
   (void) Py_InitModule("taia2seconds", Module_methods);}

@@ -43,7 +43,7 @@ def oktaia(n,taia):
 def oksrctaia(n,taia,taia_now):
   if abs( nacltaia.taia2seconds(nacltaia.taia_now()) - nacltaia.taia2seconds(taia) ) > n:
     return 0
-  if nacltaia.taia_less(taia,taias[src])>0:
+  if nacltaia.taia_new(taia,taias[src])<1:
     return 1 if taia_now == taias[src] else 0
   return 1
 
