@@ -31,21 +31,19 @@ ipc_POLLIN.register(ipc.fileno(),3)
 def ipc_poll():
   return len(ipc_POLLIN.poll(0))
 
-TAIA_FRAME = 64
+OK_SECONDS = 64
 HASH_LOG   = 128
 taias      = dict()
 RE         = 'a-zA-Z0-9^(\)\-_{\}[\]|'
 hashcache  = collections.deque([],HASH_LOG)
 
 def oktaia(n,taia):
-  taia     = taia[:16]
-  taia_now = base91a.hex(nacltaia.taia_now()[:8])
-  return 1 if abs( long(taia_now,16) - long(taia,16) ) < n else 0
+  return 1 if abs( nacltaia.taia2seconds(nacltaia.taia_now()) - nacltaia.taia2seconds(taia) ) < n else 0
 
 def oksrctaia(n,taia,taia_now):
-  if abs( long(taia_now[:16],16) - long(taia[:16],16) ) > n:
+  if abs( nacltaia.taia2seconds(nacltaia.taia_now()) - nacltaia.taia2seconds(taia) ) > n:
     return 0
-  if long(taia,16) <= long(taias[src],16):
+  if nacltaia.taia_less(taia,taias[src])>0:
     return 1 if taia_now == taias[src] else 0
   return 1
 
@@ -77,7 +75,7 @@ while 1:
   if re.search('^:cryptoserv',buffer.lower()):
     continue
 
-  taia_now = base91a.hex(nacltaia.taia_now())
+  taia_now = nacltaia.taia_now()
 
   if re.search('^:['+RE+']+![~'+RE+'.]+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +['+RE+']+ +:?.*$',buffer.upper()):
 
@@ -92,15 +90,15 @@ while 1:
 
       n  = c[:24]
       c  = c[24:]
-      pk = base91a.unhex(open('dstkey/'+src,'rb').read(64))
-      sk = base91a.unhex(open('seckey','rb').read(64))
+      pk = base91a.hex2bin(open('dstkey/'+src,'rb').read(64))
+      sk = base91a.hex2bin(open('seckey','rb').read(64))
       c  = nacltaia.crypto_box_open(c,n,pk,sk)
 
       if c == 0:
         continue
 
       m    = 0
-      taia = base91a.hex(n[:16])
+      taia = n[:16]
 
       if len(c) >= 32 + 16:
         pk = c[:32]
@@ -113,7 +111,7 @@ while 1:
       if not src in taias.keys():
         taias[src] = taia_now
 
-      if not oksrctaia(TAIA_FRAME,taia,taia_now):
+      if not oksrctaia(OK_SECONDS,taia,taia_now):
         continue
 
       if open('tmpkey/'+src+'/tk','rb').read(32) != pk:
@@ -150,15 +148,15 @@ while 1:
 
       n = c[:24]
       c = c[24:]
-      k = base91a.unhex(open('chnkey/'+dst,'rb').read(64))
+      k = base91a.hex2bin(open('chnkey/'+dst,'rb').read(64))
       m = nacltaia.crypto_secretbox_open(c,n,k)
 
       if m == 0:
         continue
 
-      taia = base91a.hex(n[:16])
+      taia = n[:16]
 
-      if not long(taia,16) and len(c) >= 32 + 64 + 24:
+      if not nacltaia.taia2seconds(taia) and len(c) >= 32 + 64 + 24:
 
         pk = m[:32]
         m  = nacltaia.crypto_sign_open(m[32:],pk)
@@ -170,22 +168,22 @@ while 1:
           continue
 
         m    = m[24:]
-        taia = base91a.hex(n[16:]) + '0000000000000000'
+        taia = n[16:] + '\x00\x00\x00\x00\x00\x00\x00\x00'
 
         if dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'):
 
-          if pk != base91a.unhex(open('unsign/'+dst+'/'+src,'rb').read(64)):
+          if pk != base91a.hex2bin(open('unsign/'+dst+'/'+src,'rb').read(64)):
             continue
 
           if not src in taias.keys():
             taias[src] = taia_now
 
-          if not oksrctaia(TAIA_FRAME,taia,taia_now):
+          if not oksrctaia(OK_SECONDS,taia,taia_now):
             continue
 
           taias[src] = taia
 
-        elif not oktaia(TAIA_FRAME,taia):
+        elif not oktaia(OK_SECONDS,taia):
           continue
 
         elif cached(h):
@@ -194,7 +192,7 @@ while 1:
       elif dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'):
         continue
 
-      elif not oktaia(TAIA_FRAME,taia):
+      elif not oktaia(OK_SECONDS,taia):
         continue
 
       elif cached(h):
@@ -223,15 +221,15 @@ while 1:
 
       m = m[24:]
 
-      taia = base91a.hex(n[:16])
+      taia = n[:16]
 
-      if pk != base91a.unhex(open('unsign/'+dst+'/'+src,'rb').read(64)):
+      if pk != base91a.hex2bin(open('unsign/'+dst+'/'+src,'rb').read(64)):
         continue
 
       if not src in taias.keys():
         taias[src] = taia_now
 
-      if not oksrctaia(TAIA_FRAME,taia,taia_now):
+      if not oksrctaia(OK_SECONDS,taia,taia_now):
         continue
 
       taias[src] = taia
@@ -265,9 +263,9 @@ while 1:
 
         m = m[24:]
 
-        taia = base91a.hex(n[:16])
+        taia = n[:16]
 
-        if not oktaia(TAIA_FRAME,taia):
+        if not oktaia(OK_SECONDS,taia):
           continue
 
         elif cached(h):
@@ -298,14 +296,14 @@ while 1:
 
       n = c[:24]
       c = c[24:]
-      k = base91a.unhex(open('chnkey/'+dst,'rb').read(64))
+      k = base91a.hex2bin(open('chnkey/'+dst,'rb').read(64))
       m = nacltaia.crypto_secretbox_open(c,n,k)
 
       m = str() if m == 0 else m
 
-      taia = base91a.hex(n[:16])
+      taia = n[:16]
 
-      if len(n) >= 16 and not long(taia,16):
+      if len(n) >= 16 and not nacltaia.taia2seconds(taia):
         pk = m[:32]
         m  = nacltaia.crypto_sign_open(m[32:],pk)
         m  = str() if m == 0 else m
