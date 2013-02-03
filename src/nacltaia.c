@@ -52,7 +52,7 @@ PyObject *pytaia_less(PyObject *self, PyObject *args, PyObject *kw){ /* workarou
   if (!PyArg_ParseTupleAndKeywords(args, kw, "|s#s#:taia_less", (char **)kwlist, &t, &tsize, &u, &usize)){
     return (PyObject *)0;}
 
-  if (tsize+usize<32)
+  if ((tsize<16)||(usize<16))
     return Py_BuildValue("i", -1);
 
   int i;
