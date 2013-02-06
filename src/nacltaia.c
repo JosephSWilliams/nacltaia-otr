@@ -8,7 +8,7 @@
 PyObject *pynacltaia(PyObject *self){ /* hack __init__ */
   return Py_BuildValue("i", 0);}
 
-PyObject *pytaia_now(PyObject *self){
+PyObject *pytaia_now_pack(PyObject *self){
   PyObject *ret;
   unsigned char *tpad;
   tpad = PyMem_Malloc(16);
@@ -40,17 +40,19 @@ PyObject *pytaia_okseconds(PyObject *self, PyObject *args, PyObject *kw){
   if ((tsize<8)||(usize<tsize))
     return Py_BuildValue("i", -1);
 
-  int l = 8, i; long long s1 = 0, s2 = 0;
+  int l = 8, i;
+  unsigned long long s1 = 0ULL, s2 = 0ULL; /* uint64 */
 
-  if ((t[0]<128)&&(u[0]<128)){ /* prevent overflow */
-    for(i=0;i<8;++i){
-      s1 += (long long)t[i] << (long long)(8 * --l);
-      s2 += (long long)u[i] << (long long)(8 *   l);}}
-  else
-    return Py_BuildValue("i", -1);
+  for(i=0;i<8;++i){
+    s1 += (unsigned long long)t[i] << (unsigned long long)(8 * --l);
+    s2 += (unsigned long long)u[i] << (unsigned long long)(8 *   l);}
 
-  if (llabs(s1 - s2) > n)
-    return Py_BuildValue("i", 0);
+  if (s1 > s2){
+    if ((s1 - s2) > (unsigned long long)n)
+      return Py_BuildValue("i", 0);}
+  else {
+    if ((s2 - s1) > (unsigned long long)n)
+      return Py_BuildValue("i", 0);}
 
   return Py_BuildValue("i", 1);}
 
@@ -67,7 +69,7 @@ PyObject *pytaia_new(PyObject *self, PyObject *args, PyObject *kw){
 
   int i;
 
-  for(i=0;i<16;++i){ /* simple implementation of taia_less */
+  for(i=0;i<16;++i){ /* simple reverse implementation of taia_less */
     if (t[i]<u[i])
       return Py_BuildValue("i", 0);
     if (t[i]>u[i])
@@ -376,7 +378,7 @@ PyObject *pycrypto_hash_sha256(PyObject *self, PyObject *args, PyObject *kw){
 
 static PyMethodDef Module_methods[] = {
   {"nacltaia",             pynacltaia,             METH_NOARGS},
-  {"taia_now",             pytaia_now,             METH_NOARGS},
+  {"taia_now_pack",        pytaia_now_pack,        METH_NOARGS},
   {"taia_new",             pytaia_new,             METH_VARARGS|METH_KEYWORDS},
   {"taia_okseconds",       pytaia_okseconds,       METH_VARARGS|METH_KEYWORDS},
   {"crypto_box",           pycrypto_box,           METH_VARARGS|METH_KEYWORDS},
@@ -393,8 +395,8 @@ static PyMethodDef Module_methods[] = {
 void initnacltaia(){
   (void) Py_InitModule("nacltaia", Module_methods);}
 
-void inittaia_now(){
-  (void) Py_InitModule("taia_now", Module_methods);}
+void inittaia_now_pack(){
+  (void) Py_InitModule("taia_now_pack", Module_methods);}
 
 void inittaia_new(){
   (void) Py_InitModule("taia_new", Module_methods);}

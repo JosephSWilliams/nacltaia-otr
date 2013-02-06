@@ -46,7 +46,7 @@ while 1:
 
       m      = re.split(' +:?',buffer,2)[2]
       m     += '\n' + array.array('B',[rR(0,256) for i in range(0,256-(len(m)+1+24+32+16+16)%256)]).tostring()
-      n      = nacltaia.taia_now()
+      n      = nacltaia.taia_now_pack()
       n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
       pk     = open('tmpkey/'+dst+'/tk','rb').read(32)
       sk     = open('tmpkey/'+dst+'/sk','rb').read(32)
@@ -78,7 +78,7 @@ while 1:
       pk     = base91a.hex2bin(open('sign/'+dst+'/pubkey','rb').read(64))
       sk     = base91a.hex2bin(open('sign/'+dst+'/seckey','rb').read(128))
       n      = array.array('B',[0 for i in range(0,16)]).tostring()
-      n     += nacltaia.taia_now()[:8]
+      n     += nacltaia.taia_now_pack()[:8]
       m      = nacltaia.crypto_sign(n+m,sk)
       m      = str() if m == 0 else m
       m      = pk + m
@@ -98,7 +98,7 @@ while 1:
 
       m      = re.split(' +:?',buffer,2)[2]
       m     += '\n' + array.array('B',[rR(0,256) for i in range(0,256-(len(m)+1+24+16)%256)]).tostring()
-      n      = nacltaia.taia_now()
+      n      = nacltaia.taia_now_pack()
       n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
       k      = base91a.hex2bin(open('chnkey/'+dst,'rb').read(64))
       c      = nacltaia.crypto_secretbox(m,n,k)
@@ -116,7 +116,7 @@ while 1:
 
       m      = re.split(' +:?',buffer,2)[2]
       m     += '\n'
-      n      = nacltaia.taia_now()
+      n      = nacltaia.taia_now_pack()
       n     += array.array('B',[0 for i in range(0,8)]).tostring()
       pk     = base91a.hex2bin(open('sign/'+dst+'/pubkey','rb').read(64))
       sk     = base91a.hex2bin(open('sign/'+dst+'/seckey','rb').read(128))

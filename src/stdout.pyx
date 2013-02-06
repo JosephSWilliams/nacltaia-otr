@@ -38,7 +38,7 @@ RE         = 'a-zA-Z0-9^(\)\-_{\}[\]|'
 hashcache  = collections.deque([],HASH_LOG)
 
 def oksrctaia(n,taia,taia_now):
-  if nacltaia.taia_okseconds(n,nacltaia.taia_now(),taia)<1:
+  if nacltaia.taia_okseconds(n,nacltaia.taia_now_pack(),taia)<1:
     return 0
   if nacltaia.taia_new(taia,taias[src])<1:
     return 1 if taia_now == taias[src] else 0
@@ -72,7 +72,7 @@ while 1:
   if re.search('^:cryptoserv',buffer.lower()):
     continue
 
-  taia_now = nacltaia.taia_now()
+  taia_now = nacltaia.taia_now_pack()
 
   if re.search('^:['+RE+']+![~'+RE+'.]+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +['+RE+']+ +:?.*$',buffer.upper()):
 
@@ -180,7 +180,7 @@ while 1:
 
           taias[src] = taia
 
-        elif nacltaia.taia_okseconds(OK_SECONDS,nacltaia.taia_now(),taia)<1:
+        elif nacltaia.taia_okseconds(OK_SECONDS,nacltaia.taia_now_pack(),taia)<1:
           continue
 
         elif cached(h):
@@ -189,7 +189,7 @@ while 1:
       elif dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'):
         continue
 
-      elif nacltaia.taia_okseconds(OK_SECONDS,nacltaia.taia_now(),taia)<1:
+      elif nacltaia.taia_okseconds(OK_SECONDS,nacltaia.taia_now_pack(),taia)<1:
         continue
 
       elif cached(h):
@@ -262,7 +262,7 @@ while 1:
 
         taia = n[:16]
 
-        if nacltaia.taia_okseconds(OK_SECONDS,nacltaia.taia_now(),taia)<1:
+        if nacltaia.taia_okseconds(OK_SECONDS,nacltaia.taia_now_pack(),taia)<1:
           continue
 
         elif cached(h):
