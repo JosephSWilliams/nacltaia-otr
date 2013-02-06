@@ -24,28 +24,30 @@ PyObject *pytaia_now_pack(PyObject *self){
   return ret;}
 
 PyObject *pytaia_okseconds(PyObject *self, PyObject *args, PyObject *kw){
-  unsigned char *t, *u;
-  Py_ssize_t tsize=0, usize=0, n=0;
-  static const char *kwlist[] = {"n","t","u",0};
+  unsigned char *t;
+  Py_ssize_t tsize=0, n=0;
+  static const char *kwlist[] = {"n","t",0};
 
   if (!PyArg_ParseTupleAndKeywords(args, kw,
     #if PY_VERSION_HEX < 0x02050000
-      "|is#s#:taia_okseconds",
+      "|is#:taia_okseconds",
     #else
-      "|ns#s#:taia_okseconds",
+      "|ns#:taia_okseconds",
     #endif
-      (char **)kwlist, &n, &t, &tsize, &u, &usize)){
+      (char **)kwlist, &n, &t, &tsize)){
     return (PyObject *)0;}
 
-  if ((tsize<8)||(usize<tsize))
+  if (tsize<8)
     return Py_BuildValue("i", -1);
 
   int l = 8, i;
-  unsigned long long s1 = 0ULL, s2 = 0ULL; /* uint64 */
+  struct timeval now;
+  gettimeofday(&now,(struct timezone *) 0);
+  unsigned long long s1 = 4611686018427387914ULL + (unsigned long long) now.tv_sec;
+  unsigned long long s2 = 0ULL; /* uint64 */
 
-  for(i=0;i<8;++i){
-    s1 += (unsigned long long)t[i] << (unsigned long long)(8 * --l);
-    s2 += (unsigned long long)u[i] << (unsigned long long)(8 *   l);}
+  for(i=0;i<8;++i)
+    s2 += (unsigned long long)t[i] << (unsigned long long)(8 * --l);
 
   if (s1 > s2){
     if ((s1 - s2) > (unsigned long long)n)
