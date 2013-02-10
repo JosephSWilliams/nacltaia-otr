@@ -12,3 +12,4 @@ make
 
 cp libtai.a /usr/lib/libtai.a
 cp *.h /usr/include/
+cp leapsecs.dat /etc/leapsecs.dat
