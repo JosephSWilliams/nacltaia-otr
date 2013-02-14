@@ -283,7 +283,7 @@ while 1:
 
     dst = re.split(' +',buffer,4)[3].lower()[1:]
     cmd = re.split(' +',buffer,2)[1]
-    m   = re.split('\[|]',buffer,2)[2][1:] if cmd == '322' else re.split(' +:?',buffer,4)[4]
+    m   = re.split('\[|]',re.split(' +:?',buffer,5)[5],2)[2][1:] if cmd == '322' else re.split(' +:?',buffer,4)[4]
 
     if dst in os.listdir('chnkey/'):
 
@@ -318,14 +318,14 @@ while 1:
         m  = m[24:]
 
       else:
-        m = re.split('\[|]',buffer,2)[2][1:] if cmd == '322' else re.split(' +:?',buffer,4)[4]
+        m = re.split('\[|]',re.split(' +:?',buffer,5)[5],2)[2][1:] if cmd == '322' else re.split(' +:?',buffer,4)[4]
 
     else:
-      m = re.split('\[|]',buffer,2)[2][1:] if cmd == '322' else re.split(' +:?',buffer,4)[4]
+      m = re.split('\[|]',re.split(' +:?',buffer,5)[5],2)[2][1:] if cmd == '322' else re.split(' +:?',buffer,4)[4]
 
     if cmd == '322':
 
-      m = '[' + re.split('\[|]',buffer,2)[1] + '] ' + m
+      m = '[' + re.split('\[|]',re.split(' +:?',buffer,5)[5],2)[1] + '] ' + m
 
       buffer = re.split(' +',buffer,1)[0] \
              + ' ' \
