@@ -11,11 +11,12 @@ import time
 import pwd
 import re
 
-uid = pwd.getpwnam('nacltaia-otr')[2]
+uid, gid = pwd.getpwnam('nacltaia-otr')[2:4]
 os.chdir('crypto/')
 os.chroot(os.getcwd())
+os.setgid(gid)
 os.setuid(uid)
-del uid
+del uid, gid
 
 ipc=socket.socket(1,1) # contains potential race condition
 for n in range(0,9):

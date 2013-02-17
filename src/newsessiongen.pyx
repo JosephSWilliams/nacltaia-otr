@@ -8,12 +8,13 @@ import pwd
 import os
 
 if len(argv)>1:
-  uid=pwd.getpwnam('nacltaia-otr')[2]
+  uid, gid = pwd.getpwnam('nacltaia-otr')[2:4]
   p=Popen(['./crypto_box_keypair'],stdin=-1,stdout=-1) # cannot chroot and read /dev/urandom
   os.chdir(argv[1])
   os.chroot(os.getcwd())
+  os.setgid(gid)
   os.setuid(uid)
-  del uid
+  del uid, gid
   for dst in os.listdir('dstkey/'):
     os.mkdir('tmpkey/'+dst) if not os.path.exists('tmpkey/'+dst) else 0
     open('tmpkey/'+dst+'/tk','ab').write(str())
