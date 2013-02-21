@@ -32,8 +32,8 @@ ipc_POLLIN.register(ipc.fileno(),3)
 def ipc_poll():
   return len(ipc_POLLIN.poll(0))
 
-OK_SECONDS = 128
-HASH_LOG   = 256
+OK_SECONDS = int(open('OK_SECONDS','rb').read().split('\n')[0]) if os.path.exists('OK_SECONDS') else 128
+HASH_LOG   = int(open('HASH_LOG','rb').read().split('\n')[0]) if os.path.exists('HASH_LOG') else 256
 taias      = dict()
 RE         = 'a-zA-Z0-9^(\)\-_{\}[\]|'
 hashcache  = collections.deque([],HASH_LOG)
