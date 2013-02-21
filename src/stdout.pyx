@@ -32,8 +32,8 @@ ipc_POLLIN.register(ipc.fileno(),3)
 def ipc_poll():
   return len(ipc_POLLIN.poll(0))
 
-OK_SECONDS = 64
-HASH_LOG   = 128
+OK_SECONDS = 128
+HASH_LOG   = 256
 taias      = dict()
 RE         = 'a-zA-Z0-9^(\)\-_{\}[\]|'
 hashcache  = collections.deque([],HASH_LOG)
