@@ -3,6 +3,7 @@
 # architectures with NaCl. Much thanks to Ivo Smits for
 # doing a lot of the work.
 
+rm nacl-20110221 -rf
 wget -O- http://hyperelliptic.org/nacl/nacl-20110221.tar.bz2 | bunzip2 | tar -xf -
 
 # Use my patched copy of curvecpserver.c
@@ -12,6 +13,10 @@ wget -O- http://hyperelliptic.org/nacl/nacl-20110221.tar.bz2 | bunzip2 | tar -xf
 # style environment variables with *.cdb rules would be nice :-)
 # (I replaced all the \tabs with 2 spaces, eww tab)
 cat src/curvecpserver.c > nacl-20110221/curvecp/curvecpserver.c
+
+# Use my patched copy of socket_bind.c
+# if AF_UNSPEC fails then try using AF_INET
+cat src/socket_bind.c > nacl-20110221/curvecp/socket_bind.c
 
 cd nacl-20110221
 
