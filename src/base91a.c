@@ -144,25 +144,25 @@ PyObject *pyhex2bin(PyObject *self, PyObject *args, PyObject *kw){
   int l = 0; int i = 0;
 
   for(i=0;i<dlen;++i){
-    if ((data[i]>47)&(data[i]<58))
+    if ((data[i]>47)&&(data[i]<58))
       out[l] = data[i] - 48 << 4;
     else {
-      if ((data[i]>64)&(data[i]<71))
+      if ((data[i]>64)&&(data[i]<71))
         out[l] = data[i] - 55 << 4;
       else {
-        if ((data[i]>96)&(data[i]<103))
+        if ((data[i]>96)&&(data[i]<103))
           out[l] = data[i] - 87 << 4;
         else {
           PyMem_Free(out);
           return Py_BuildValue("s", "");}}}++i;
 
-    if ((data[i]>47)&(data[i]<58))
+    if ((data[i]>47)&&(data[i]<58))
       out[l] += data[i] - 48;
     else {
-      if ((data[i]>64)&(data[i]<71))
+      if ((data[i]>64)&&(data[i]<71))
         out[l] += data[i] - 55;
       else {
-        if ((data[i]>96)&(data[i]<103))
+        if ((data[i]>96)&&(data[i]<103))
           out[l] += data[i] - 87;
         else {
           PyMem_Free(out);
