@@ -47,7 +47,7 @@ PyObject *pytaia_okseconds(PyObject *self, PyObject *args, PyObject *kw){
   unsigned long long s2 = 0ULL; /* uint64 */
 
   for(i=0;i<8;++i)
-    s2 += (unsigned long long)t[i] << (unsigned long long)(8 * --l);
+    s2 += (unsigned long long)t[i] << (unsigned long long)(--l << 3);
 
   if (s1 > s2){
     if ((s1 - s2) > (unsigned long long)n)
