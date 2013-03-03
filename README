@@ -205,5 +205,5 @@ ucspi-tcp (tor):
   irssi -c 127.0.0.1
 
 curvecp:
-  tcpserver 127.0.0.1 6667 ./ucspi-server2client curvecpclient irc.crypto.net $pubkey 1.1.5.67 6667 $extension curvecpmessage ./stdio &
+  tcpserver 127.0.0.1 6667 curvecpclient irc.crypto.net $pubkey 1.1.5.67 6667 $extension curvecpmessage -c ./stdio &
   irssi -c 127.0.0.1
