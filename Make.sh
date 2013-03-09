@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -v
 
 if [ -e '/usr/lib/libnacl.so' ]; then
   echo $0': fatal error: move /usr/lib/libnacl.so temporarily' 1>&2
