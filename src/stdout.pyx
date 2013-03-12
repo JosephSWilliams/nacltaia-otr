@@ -20,7 +20,7 @@ del uid, gid
 
 ipc=socket.socket(1,1) # contains potential race condition
 for n in range(0,9):
-  sys.exit(128+111) if n == 8 else 0
+  if n == 8: sys.exit(128+111)
   try:
     ipc.connect('socket')
     del n
