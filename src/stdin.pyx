@@ -133,7 +133,7 @@ while 1:
              + m
 
     try:
-      ipc.send(h) if h else 0
+      if (h and buffer[:6].upper() != 'TOPIC '): ipc.send(h)
     except:
       sys.exit(128+32)
 
