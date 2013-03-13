@@ -16,7 +16,7 @@ if len(argv)>1:
   os.setuid(uid)
   del uid, gid
   for dst in os.listdir('dstkey/'):
-    os.mkdir('tmpkey/'+dst) if not os.path.exists('tmpkey/'+dst) else 0
+    if not os.path.exists('tmpkey/'+dst): os.mkdir('tmpkey/'+dst)
     open('tmpkey/'+dst+'/tk','ab').write(str())
     for n in range(0,32):
       rk = array('B',[rR(0,256) for i in range(0,32)]).tostring()

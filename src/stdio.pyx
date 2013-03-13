@@ -22,44 +22,32 @@ os.setgid(gid)
 os.setuid(uid)
 del uid, gid
 
-client_POLLIN=select.poll()
-client_POLLIN.register(rd,3)
+# why doesn't python have pollfd.revents?
+poll=select.poll()
+poll.register(rd,select.POLLIN|select.POLLPRI)
+poll.register(6,select.POLLIN|select.POLLPRI)
+poll=poll.poll
 
-server_POLLIN=select.poll()
-server_POLLIN.register(6,3)
+client_events=select.poll()
+client_events.register(rd,select.POLLIN|select.POLLPRI)
+def client_revents():
+  return len(client_events.poll(0))
 
-def client_poll():
-  return len( client_POLLIN.poll(256-
-    (256*len( server_POLLIN.poll(0)))
-  ))
-
-def server_poll():
-  return len( server_POLLIN.poll(256-
-    (256*len( client_POLLIN.poll(0)))
-  ))
+server_events=select.poll()
+server_events.register(6,select.POLLIN|select.POLLPRI)
+def server_revents():
+  return len(server_events.poll(0))
 
 while 1:
 
-  if client_poll():
-    buffer = str()
-    while 1:
-      byte = os.read(rd,1)
-      if not byte:
-        sys.exit(0)
-      if byte == '\n':
-        break
-      if byte != '\r' and len(buffer)<1024:
-        buffer+=byte
-    os.write(7,buffer+'\n')
+  poll(-1)
 
-  while server_poll():
-    buffer = str()
-    while 1:
-      byte = os.read(6,1)
-      if not byte:
-        sys.exit(0)
-      if byte == '\n':
-        break
-      if byte != '\r' and len(buffer)<1024:
-        buffer+=byte
-    os.write(wr,buffer+'\n')
+  if client_revents():
+    buffer = os.read(rd,1024)
+    if not buffer: sys.exit(0)
+    os.write(7,buffer)
+
+  if server_revents():
+    buffer = os.read(6,1024)
+    if not buffer: sys.exit(0)
+    os.write(wr,buffer)
