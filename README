@@ -68,10 +68,10 @@ nacltaia-otr:
   provides that nacltaia-otr will never leak your
   precense or uptime statistics as long as your IRC
   server of choice doesn't announce this information.
-  if your friend changes session keys nacltaia-otr
-  before your nacltaia-otr knows, they will receive
-  a message from CryptoServ!nacltaia-otr@service.
-  they can simply request you resend your message.
+  if your friend changes session keys before your
+  nacltaia-otr knows, they will receive a message
+  from CryptoServ!nacltaia-otr@service. they can
+  simply request you resend your message.
 
   nacltaia-otr has no builtin methods for logging. if
   your IRC client of choice doesn't write logs to HDD
@@ -143,9 +143,6 @@ adding crypto:
   # lowercase
 
   ./seckey
-
-  mkdir -p crypto/dstkey/
-  mkdir -p crypto/tmpkey/$nick
 
   printf $seckey > crypto/chnkey/$channel
 
