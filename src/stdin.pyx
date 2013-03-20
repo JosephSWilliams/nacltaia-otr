@@ -58,12 +58,7 @@ while 1:
       sk     = base91a.hex2bin(open('seckey','rb').read(64))
       c      = nacltaia.crypto_box(c,n,pk,sk)
       c      = str() if c == 0 else c
-
-      buffer = re_SPLIT_SPACE(buffer,1)[0].upper() \
-             + ' ' \
-             + re_SPLIT_SPACE(buffer,2)[1] \
-             + ' :' \
-             + base91a.encode(n+c)
+      buffer = ' '.join(re_SPLIT_SPACE(buffer,2)[:2]) + ' :' + base91a.encode(n+c)
 
   elif re_PRIVMSG_CHANNEL(buffer):
 
@@ -88,12 +83,7 @@ while 1:
       c      = str() if c == 0 else c
       c      = base91a.encode(n+c)
       h      = nacltaia.crypto_hash_sha256(c)
-
-      buffer = re_SPLIT_SPACE(buffer,1)[0].upper() \
-             + ' ' \
-             + re_SPLIT_SPACE(buffer,2)[1] \
-             + ' :' \
-             + c
+      buffer = ' '.join(re_SPLIT_SPACE(buffer,2)[:2]) + ' :' + c
 
     elif dst in os.listdir('chnkey/'):
 
@@ -106,12 +96,7 @@ while 1:
       c      = str() if c == 0 else c
       c      = base91a.encode(n+c)
       h      = nacltaia.crypto_hash_sha256(c)
-
-      buffer = re_SPLIT_SPACE(buffer,1)[0].upper() \
-             + ' ' \
-             + re_SPLIT_SPACE(buffer,2)[1] \
-             + ' :' \
-             + c
+      buffer = ' '.join(re_SPLIT_SPACE(buffer,2)[:2]) + ' :' + c
 
     elif dst in os.listdir('sign/'):
 
@@ -125,12 +110,7 @@ while 1:
       m      = str() if m == 0 else m
       m      = base91a.encode(pk+m)
       h      = nacltaia.crypto_hash_sha256(m)
-
-      buffer = re_SPLIT_SPACE(buffer,1)[0].upper() \
-             + ' ' \
-             + re_SPLIT_SPACE(buffer,2)[1] \
-             + ' :' \
-             + m
+      buffer = ' '.join(re_SPLIT_SPACE(buffer,2)[:2]) + ' :' + m
 
     try:
       if h and buffer[:6].upper() != 'TOPIC ': ipc.send(h)
