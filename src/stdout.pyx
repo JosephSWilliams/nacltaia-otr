@@ -273,6 +273,7 @@ while 1:
     else: m = re_SPLIT_BRACKETS(re_SPLIT_SPACE_COLON(buffer,5)[5],2)[2][1:] if cmd == '322' else re_SPLIT_SPACE_COLON(buffer,4)[4]
 
     if cmd == '322':
+
       m = '[' + re_SPLIT_BRACKETS(re_SPLIT_SPACE_COLON(buffer,5)[5],2)[1] + '] ' + m
 
       buffer = ' '.join(re_SPLIT_SPACE(buffer,5)[:5]) + ' :' + m.split('\n',1)[0]
