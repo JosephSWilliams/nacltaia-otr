@@ -118,14 +118,7 @@ while 1:
         os.write(1,':CryptoServ!nacltaia-otr@service NOTICE ' + re_SPLIT_SPACE(buffer,3)[2] + ' :unable to decrypt message from ' + src + '\a\n')
         continue
 
-      else:
-        buffer = re_SPLIT_SPACE(buffer,1)[0] \
-               + ' ' \
-               + re_SPLIT_SPACE(buffer,2)[1].upper() \
-               + ' ' \
-               + re_SPLIT_SPACE(buffer,3)[2] \
-               + ' :' \
-               + m.split('\n',1)[0]
+      else: buffer = ' '.join(re_SPLIT_SPACE(buffer,3)[:3]) + ' :' + m.split('\n',1)[0]
 
   elif re_CHANNEL_PRIVMSG_NOTICE_TOPIC(buffer):
 
@@ -181,13 +174,7 @@ while 1:
 
       elif cached(h): continue
 
-      buffer = re_SPLIT_SPACE(buffer,1)[0] \
-             + ' ' \
-             + re_SPLIT_SPACE(buffer,2)[1].upper() \
-             + ' ' \
-             + re_SPLIT_SPACE(buffer,3)[2] \
-             + ' :' \
-             + m.split('\n',1)[0]
+      buffer = ' '.join(re_SPLIT_SPACE(buffer,3)[:3]) + ' :' + m.split('\n',1)[0]
 
     elif dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'):
 
@@ -212,13 +199,7 @@ while 1:
 
       taias[src] = taia
 
-      buffer = re_SPLIT_SPACE(buffer,1)[0] \
-             + ' ' \
-             + re_SPLIT_SPACE(buffer,2)[1].upper() \
-             + ' ' \
-             + re_SPLIT_SPACE(buffer,3)[2] \
-             + ' :' \
-             + m.split('\n',1)[0]
+      buffer = ' '.join(re_SPLIT_SPACE(buffer,3)[:3]) + ' :' + m.split('\n',1)[0]
 
     elif len(m) >= 56 + 64 and not ' ' in m:
 
@@ -247,13 +228,7 @@ while 1:
 
       else: m = re_SPLIT_SPACE_COLON(buffer,3)[3]
 
-      buffer = re_SPLIT_SPACE(buffer,1)[0] \
-             + ' ' \
-             + re_SPLIT_SPACE(buffer,2)[1].upper() \
-             + ' ' \
-             + re_SPLIT_SPACE(buffer,3)[2] \
-             + ' :' \
-             + m.split('\n',1)[0]
+      buffer = ' '.join(re_SPLIT_SPACE(buffer,3)[:3]) + ' :' + m.split('\n',1)[0]
 
   elif re_322_332(buffer):
 
@@ -298,38 +273,17 @@ while 1:
     else: m = re_SPLIT_BRACKETS(re_SPLIT_SPACE_COLON(buffer,5)[5],2)[2][1:] if cmd == '322' else re_SPLIT_SPACE_COLON(buffer,4)[4]
 
     if cmd == '322':
-
       m = '[' + re_SPLIT_BRACKETS(re_SPLIT_SPACE_COLON(buffer,5)[5],2)[1] + '] ' + m
 
-      buffer = re_SPLIT_SPACE(buffer,1)[0] \
-             + ' ' \
-             + re_SPLIT_SPACE(buffer,2)[1] \
-             + ' ' \
-             + re_SPLIT_SPACE(buffer,3)[2] \
-             + ' ' \
-             + re_SPLIT_SPACE(buffer,4)[3] \
-             + ' ' \
-             + re_SPLIT_SPACE(buffer,5)[4] \
-             + ' :' \
-             + m.split('\n',1)[0]
+      buffer = ' '.join(re_SPLIT_SPACE(buffer,5)[:5]) + ' :' + m.split('\n',1)[0]
 
-    elif cmd == '332':
-
-      buffer = re_SPLIT_SPACE(buffer,1)[0] \
-             + ' ' \
-             + re_SPLIT_SPACE(buffer,2)[1] \
-             + ' ' \
-             + re_SPLIT_SPACE(buffer,3)[2] \
-             + ' ' \
-             + re_SPLIT_SPACE(buffer,4)[3] \
-             + ' :' \
-             + m.split('\n',1)[0]
+    elif cmd == '332': buffer = ' '.join(re_SPLIT_SPACE(buffer,4)[:4]) + ' :' + m.split('\n',1)[0]
 
   buffer = codecs.ascii_encode(unicodedata.normalize('NFKD',unicode(buffer,'utf-8','replace')),'ignore')[0]
   buffer = re_BUFFER_X02_X0F('',buffer)
   buffer = re_BUFFER_CTCP_DCC('*',buffer)
   buffer = re_BUFFER_COLOUR('',buffer)
-  buffer = str({str():buffer})[6:][:len(str({str():buffer})[6:])-2] + '\n'
+  buffer = str({str():buffer})[6:-2]+'\n'
   buffer = buffer.replace("\\'","'")
   buffer = buffer.replace('\\\\','\\')
 
