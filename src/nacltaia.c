@@ -122,8 +122,8 @@ PyObject *pycrypto_box(PyObject *self, PyObject *args, PyObject *kw){
     return (PyObject *)0;}
 
   if (nsize != crypto_box_NONCEBYTES) return Py_BuildValue("i", 0);
-  if (pksize != crypto_box_PUBLICKEYBYTES) Py_BuildValue("i", 0);
-  if (sksize != crypto_box_SECRETKEYBYTES) Py_BuildValue("i", 0);
+  if (pksize != crypto_box_PUBLICKEYBYTES) return Py_BuildValue("i", 0);
+  if (sksize != crypto_box_SECRETKEYBYTES) return Py_BuildValue("i", 0);
 
   mlen = msize + crypto_box_ZEROBYTES;
   mpad = PyMem_Malloc(mlen);
