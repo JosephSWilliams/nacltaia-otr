@@ -15,7 +15,7 @@ RE = 'a-zA-Z0-9^(\)\-_{\}[\]|'
 re_SPLIT_SPACE = re.compile(' +',re.IGNORECASE).split
 re_SPLIT_SPACE_COLON = re.compile(' +:?',re.IGNORECASE).split
 re_SPLIT_BRACKETS = re.compile('\[|]',re.IGNORECASE).split
-re_CRYPTOSERV = re.compile('^:cryptoserv',re.IGNORECASE).search
+re_CRYPTOSERV = re.compile('^:['+RE+']+!nacltaia-otr@service ',re.IGNORECASE).search
 re_NICK_PRIVMSG_NOTICE_TOPIC = re.compile('^:['+RE+']+![~'+RE+'.]+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +['+RE+']+ +:?.*$',re.IGNORECASE).search
 re_CHANNEL_PRIVMSG_NOTICE_TOPIC = re.compile('^:['+RE+']+![~'+RE+'.]+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +#['+RE+']+ +:?.*$',re.IGNORECASE).search
 re_322_332 = re.compile('^:['+RE+'.]+ +((322)|(332)) +['+RE+']+ +#['+RE+']+ ?([0-9]+)? +:?.*$',re.IGNORECASE).search
@@ -115,7 +115,7 @@ while 1:
       taias[src] = taia
 
       if m == 0:
-        os.write(1,':CryptoServ!nacltaia-otr@service NOTICE ' + re_SPLIT_SPACE(buffer,3)[2] + ' :unable to decrypt message from ' + src + '\a\n')
+        os.write(1,':'+src+'!nacltaia-otr@service NOTICE '+re_SPLIT_SPACE(buffer,3)[2]+' :unable to decrypt message\a\n')
         continue
 
       else: buffer = ' '.join(re_SPLIT_SPACE(buffer,3)[:3]) + ' :' + m.split('\n',1)[0]

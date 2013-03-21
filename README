@@ -70,8 +70,8 @@ nacltaia-otr:
   server of choice doesn't announce this information.
   if your friend changes session keys before your
   nacltaia-otr knows, they will receive a message
-  from CryptoServ!nacltaia-otr@service. they can
-  simply request you resend your message.
+  from Nick!nacltaia-otr@service. they can simply
+  request you resend your message.
 
   nacltaia-otr has no builtin methods for logging. if
   your IRC client of choice doesn't write logs to HDD
