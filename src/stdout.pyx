@@ -115,7 +115,7 @@ while 1:
       taias[src] = taia
 
       if m == 0:
-        os.write(1,':'+src+'!nacltaia-otr@service NOTICE '+re_SPLIT_SPACE(buffer,3)[2]+' :unable to decrypt message\a\n')
+        os.write(1,':' + buffer[1:].split('!',1)[0] + '!nacltaia-otr@service NOTICE ' + re_SPLIT_SPACE(buffer,3)[2] + ' :unable to decrypt message\a\n')
         continue
 
       else: buffer = ' '.join(re_SPLIT_SPACE(buffer,3)[:3]) + ' :' + m.split('\n',1)[0]
