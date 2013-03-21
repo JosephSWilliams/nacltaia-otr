@@ -98,7 +98,7 @@ depends:
   gcc, sh
 
 recommends:
-  cython(>=0.17.3), ucspi-tcp, urcd
+  cython(>=0.18.0), ucspi-tcp, urcd
 
 install:
 
