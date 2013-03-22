@@ -15,13 +15,12 @@ RE = 'a-zA-Z0-9^(\)\-_{\}[\]|'
 re_SPLIT_SPACE = re.compile(' +',re.IGNORECASE).split
 re_SPLIT_SPACE_COLON = re.compile(' +:?',re.IGNORECASE).split
 re_SPLIT_BRACKETS = re.compile('\[|]',re.IGNORECASE).split
-re_CRYPTOSERV = re.compile('^:['+RE+']+!nacltaia-otr@service ',re.IGNORECASE).search
+re_CRYPTOSERV = re.compile('^:['+RE+']+!nacltaia-otr@service',re.IGNORECASE).search
 re_NICK_PRIVMSG_NOTICE_TOPIC = re.compile('^:['+RE+']+![~'+RE+'.]+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +['+RE+']+ +:?.*$',re.IGNORECASE).search
 re_CHANNEL_PRIVMSG_NOTICE_TOPIC = re.compile('^:['+RE+']+![~'+RE+'.]+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +#['+RE+']+ +:?.*$',re.IGNORECASE).search
 re_322_332 = re.compile('^:['+RE+'.]+ +((322)|(332)) +['+RE+']+ +#['+RE+']+ ?([0-9]+)? +:?.*$',re.IGNORECASE).search
-re_BUFFER_X02_X0F = re.compile('[\x02\x0f]',re.IGNORECASE).sub
-re_BUFFER_CTCP_DCC = re.compile('\x01(ACTION )?',re.IGNORECASE).sub
-re_BUFFER_COLOUR = re.compile('\x03[0-9]?[0-9]?((?<=[0-9]),[0-9]?[0-9]?)?',re.IGNORECASE).sub
+re_BUFFER_CTCP_DCC = re.compile('\x01(?!ACTION )',re.IGNORECASE).sub
+re_BUFFER_COLOUR = re.compile('(\x03[0-9][0-9]?((?<=[0-9]),[0-9]?[0-9]?)?)|[\x02\x0f\x1d\x1f]',re.IGNORECASE).sub
 
 uid, gid = pwd.getpwnam('nacltaia-otr')[2:4]
 os.chdir('crypto/')
@@ -44,8 +43,12 @@ ipc_POLLIN.register(ipc.fileno(),3)
 def ipc_poll():
   return len(ipc_POLLIN.poll(0))
 
-OK_SECONDS = int(open('OK_SECONDS','rb').read().split('\n')[0]) if os.path.exists('OK_SECONDS') else 128
+COLOUR = int(open('COLOUR','rb').read().split('\n')[0]) if os.path.exists('COLOUR') else 0
+UNICODE = int(open('UNICODE','rb').read().split('\n')[0]) if os.path.exists('UNICODE') else 0
+
 HASH_LOG = int(open('HASH_LOG','rb').read().split('\n')[0]) if os.path.exists('HASH_LOG') else 256
+OK_SECONDS = int(open('OK_SECONDS','rb').read().split('\n')[0]) if os.path.exists('OK_SECONDS') else 128
+
 taias = dict()
 hashcache = collections.deque([],HASH_LOG)
 
@@ -280,12 +283,11 @@ while 1:
 
     elif cmd == '332': buffer = ' '.join(re_SPLIT_SPACE(buffer,4)[:4]) + ' :' + m.split('\n',1)[0]
 
-  buffer = codecs.ascii_encode(unicodedata.normalize('NFKD',unicode(buffer,'utf-8','replace')),'ignore')[0]
-  buffer = re_BUFFER_X02_X0F('',buffer)
-  buffer = re_BUFFER_CTCP_DCC('*',buffer)
-  buffer = re_BUFFER_COLOUR('',buffer)
-  buffer = str({str():buffer})[6:-2]+'\n'
-  buffer = buffer.replace("\\'","'")
-  buffer = buffer.replace('\\\\','\\')
+  buffer = re_BUFFER_CTCP_DCC('',buffer)
+  if not COLOUR: buffer = re_BUFFER_COLOUR('',buffer)
+  if not UNICODE:
+    buffer = codecs.ascii_encode(unicodedata.normalize('NFKD',unicode(buffer,'utf-8','replace')),'ignore')[0]
+    buffer = ''.join(byte for byte in buffer if 127 > ord(byte) > 31 or byte in ['\x01','\x02','\x03','\x0f','\x1d','\x1f'])
+  buffer += '\n'
 
   os.write(1,buffer)
