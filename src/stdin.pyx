@@ -16,7 +16,7 @@ os.setgid(gid)
 os.setuid(uid)
 del uid, gid
 
-sock=socket.socket(1,1) # contains potential race condition
+sock=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM) # contains potential race condition
 sock.bind('socket')
 sock.listen(1)
 ipc=sock.accept()[0]

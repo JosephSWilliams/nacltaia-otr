@@ -29,7 +29,7 @@ os.setgid(gid)
 os.setuid(uid)
 del uid, gid
 
-ipc=socket.socket(1,1) # contains potential race condition
+ipc=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM) # contains potential race condition
 for n in range(0,9):
   if n == 8: sys.exit(128+111)
   try:
@@ -38,8 +38,8 @@ for n in range(0,9):
     break
   except:
     time.sleep(0.1)
-ipc_POLLIN=select.poll()
-ipc_POLLIN.register(ipc.fileno(),3)
+ipc_poll=select.poll()
+ipc_poll.register(ipc.fileno(),select.POLLIN|select.POLLPRI)
 ipc_poll=ipc_POLLIN.poll
 
 COLOUR = int(open('COLOUR','rb').read().split('\n')[0]) if os.path.exists('COLOUR') else 0
