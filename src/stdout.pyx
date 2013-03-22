@@ -288,6 +288,4 @@ while 1:
   if not UNICODE:
     buffer = codecs.ascii_encode(unicodedata.normalize('NFKD',unicode(buffer,'utf-8','replace')),'ignore')[0]
     buffer = ''.join(byte for byte in buffer if 127 > ord(byte) > 31 or byte in ['\x01','\x02','\x03','\x0f','\x1d','\x1f'])
-  buffer += '\n'
-
-  os.write(1,buffer)
+  os.write(1,buffer+'\n')
