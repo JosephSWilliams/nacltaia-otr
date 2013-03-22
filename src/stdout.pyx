@@ -40,8 +40,7 @@ for n in range(0,9):
     time.sleep(0.1)
 ipc_POLLIN=select.poll()
 ipc_POLLIN.register(ipc.fileno(),3)
-def ipc_poll():
-  return len(ipc_POLLIN.poll(0))
+ipc_poll=ipc_POLLIN.poll
 
 COLOUR = int(open('COLOUR','rb').read().split('\n')[0]) if os.path.exists('COLOUR') else 0
 UNICODE = int(open('UNICODE','rb').read().split('\n')[0]) if os.path.exists('UNICODE') else 0
@@ -72,7 +71,7 @@ while 1:
     if byte == '\n': break
     if byte != '\r' and len(buffer)<1024: buffer += byte
 
-  while ipc_poll():
+  while ipc_poll(0):
     h = ipc.recv(32)
     if len(h) < 32: sys.exit(128+32)
     cached(h)
