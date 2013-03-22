@@ -283,7 +283,7 @@ while 1:
 
     elif cmd == '332': buffer = ' '.join(re_SPLIT_SPACE(buffer,4)[:4]) + ' :' + m.split('\n',1)[0]
 
-  buffer = re_BUFFER_CTCP_DCC('',buffer)
+  buffer = re_BUFFER_CTCP_DCC('',buffer) + '\x01' if '\x01ACTION ' in buffer.upper() else buffer.replace('\x01','')
   if not COLOUR: buffer = re_BUFFER_COLOUR('',buffer)
   if not UNICODE:
     buffer = codecs.ascii_encode(unicodedata.normalize('NFKD',unicode(buffer,'utf-8','replace')),'ignore')[0]
