@@ -40,7 +40,7 @@ for n in range(0,9):
     time.sleep(0.1)
 ipc_poll=select.poll()
 ipc_poll.register(ipc.fileno(),select.POLLIN|select.POLLPRI)
-ipc_poll=ipc_POLLIN.poll
+ipc_poll=ipc_poll.poll
 
 COLOUR = int(open('COLOUR','rb').read().split('\n')[0]) if os.path.exists('COLOUR') else 0
 UNICODE = int(open('UNICODE','rb').read().split('\n')[0]) if os.path.exists('UNICODE') else 0
