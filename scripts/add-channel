@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+if [ -z $3 ]; then
+  echo $0': </path/to/crypto/> <channel> <seckey>'
+  exit 64
+fi
+
+printf $3 > "$1"/chnkey/$2
+./touchcrypto "$1"

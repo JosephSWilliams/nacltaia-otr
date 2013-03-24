@@ -1,0 +1,11 @@
+#!/bin/sh -e
+
+if [ -z $3 ]; then
+  echo $0': </path/to/crypto/> <nick> <pubkey>'
+  exit 64
+fi
+
+mkdir -p "$1"/dstkey/
+mkdir -p "$1"/tmpkey/$2
+printf $3 > "$1"/dstkey/$2
+./touchcrypto "$1"
