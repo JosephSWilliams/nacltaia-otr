@@ -108,7 +108,7 @@ while 1:
       sk     = base91a.hex2bin(open('sign/'+dst+'/seckey','rb').read(128))
       m      = nacltaia.crypto_sign(n+m,sk)
       m      = str() if m == 0 else m
-      m      = base91a.encode(pk+m)
+      m      = base91a.encode(n+pk+m)
       h      = nacltaia.crypto_hash_sha256(m)
       buffer = ' '.join(re_SPLIT_SPACE(buffer,2)[:2]) + ' :' + m
 

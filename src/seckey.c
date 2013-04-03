@@ -4,7 +4,7 @@ int main()
   while (fd==-1)
   {
     fd = open("/dev/urandom",0);
-    if  (fd==-1) sleep(1);
+    if (fd==-1) sleep(1);
   }
 
   unsigned char sk[32]={0};
