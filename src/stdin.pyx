@@ -27,6 +27,7 @@ del sock
 RE = 'a-zA-Z0-9^(\)\-_{\}[\]|'
 re_SPLIT_SPACE = re.compile(' +',re.IGNORECASE).split
 re_SPLIT_SPACE_COLON = re.compile(' +:?',re.IGNORECASE).split
+re_PREFIX = re.compile('^:['+RE+']+![~'+RE+'.]+@['+RE+'.]+ +',re.IGNORECASE).search
 re_PRIVMSG_NICK = re.compile('^((PRIVMSG)|(NOTICE)|(TOPIC)) +['+RE+']+ +:?.*$',re.IGNORECASE).search
 re_PRIVMSG_CHANNEL = re.compile('^((PRIVMSG)|(NOTICE)|(TOPIC)) +#['+RE+']+ +:?.*$',re.IGNORECASE).search
 
@@ -39,13 +40,16 @@ while 1:
     if byte == '\n': break
     if byte != '\r' and len(buffer)<1024: buffer += byte
 
+  if re_PREFIX(buffer): prefix, buffer = re_SPLIT_SPACE(buffer,1)
+  else: prefix = str()
+
   if re_PRIVMSG_NICK(buffer):
 
     dst = re_SPLIT_SPACE_COLON(buffer,2)[1].lower()
 
     if dst in os.listdir('dstkey/'):
 
-      m      = re.split(' +:?',buffer,2)[2]
+      m      = re_SPLIT_SPACE_COLON(buffer,2)[2]
       m     += '\n' + array.array('B',[rR(0,256) for i in range(0,256-(len(m)+1+24+32+16+16)%256)]).tostring()
       n      = nacltaia.taia_now_pack()
       n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
@@ -117,4 +121,5 @@ while 1:
     except:
       sys.exit(128+32)
 
+  if prefix: os.write(1,prefix+' ')
   os.write(1,buffer+'\n')
