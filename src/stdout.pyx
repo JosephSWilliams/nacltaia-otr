@@ -17,8 +17,8 @@ re_SPLIT_SPACE_COLON = re.compile(' +:?',re.IGNORECASE).split
 re_SPLIT_BRACKETS = re.compile('\[|]',re.IGNORECASE).split
 re_CRYPTOSERV = re.compile('^:['+RE+']+!nacltaia-otr@service',re.IGNORECASE).search
 re_NICK_PRIVMSG_NOTICE_TOPIC = re.compile('^:['+RE+']+![~'+RE+'.]+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +['+RE+']+ +:?.*$',re.IGNORECASE).search
-re_CHANNEL_PRIVMSG_NOTICE_TOPIC = re.compile('^:['+RE+']+![~'+RE+'.]+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +#['+RE+']+ +:?.*$',re.IGNORECASE).search
-re_322_332 = re.compile('^:['+RE+'.]+ +((322)|(332)) +['+RE+']+ +#['+RE+']+ ?([0-9]+)? +:?.*$',re.IGNORECASE).search
+re_CHANNEL_PRIVMSG_NOTICE_TOPIC = re.compile('^:['+RE+']+![~'+RE+'.]+@['+RE+'.]+ +((PRIVMSG)|(NOTICE)|(TOPIC)) +[#&!+]['+RE+']+ +:?.*$',re.IGNORECASE).search
+re_322_332 = re.compile('^:['+RE+'.]+ +((322)|(332)) +['+RE+']+ +[#&!+]['+RE+']+ ?([0-9]+)? +:?.*$',re.IGNORECASE).search
 re_BUFFER_CTCP_DCC = re.compile('\x01(?!ACTION )',re.IGNORECASE).sub
 re_BUFFER_COLOUR = re.compile('(\x03[0-9][0-9]?((?<=[0-9]),[0-9]?[0-9]?)?)|[\x02\x03\x0f\x1d\x1f]',re.IGNORECASE).sub
 

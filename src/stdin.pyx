@@ -29,7 +29,7 @@ re_SPLIT_SPACE = re.compile(' +',re.IGNORECASE).split
 re_SPLIT_SPACE_COLON = re.compile(' +:?',re.IGNORECASE).split
 re_PREFIX = re.compile('^:['+RE+']+![~'+RE+'.]+@['+RE+'.]+ +',re.IGNORECASE).search
 re_PRIVMSG_NICK = re.compile('^((PRIVMSG)|(NOTICE)|(TOPIC)) +['+RE+']+ +:?.*$',re.IGNORECASE).search
-re_PRIVMSG_CHANNEL = re.compile('^((PRIVMSG)|(NOTICE)|(TOPIC)) +#['+RE+']+ +:?.*$',re.IGNORECASE).search
+re_PRIVMSG_CHANNEL = re.compile('^((PRIVMSG)|(NOTICE)|(TOPIC)) +[#&!+]['+RE+']+ +:?.*$',re.IGNORECASE).search
 
 while 1:
 
