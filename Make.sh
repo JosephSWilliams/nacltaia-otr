@@ -20,6 +20,8 @@ fi
 
 mkdir -p build || exit 1
 
+gcc src/stdio.c -o stdio || exit 1
+
 gcc src/seckey.c -o seckey || exit 1
 
 gcc src/ucspi-socks4aclient.c -o ucspi-socks4aclient || exit 1
@@ -55,9 +57,9 @@ if ! $(which cython 2>&1 >/dev/null); then
   exit 0
 fi
 
-cython --embed src/stdio.pyx -o build/stdio.c         || exit 1
-gcc -O2 -c build/stdio.c -I $HEADERS -o build/stdio.o || exit 1
-gcc -O1 -o stdio build/stdio.o -l python2.6           || exit 1
+#cython --embed src/stdio.pyx -o build/stdio.c         || exit 1
+#gcc -O2 -c build/stdio.c -I $HEADERS -o build/stdio.o || exit 1
+#gcc -O1 -o stdio build/stdio.o -l python2.6           || exit 1
 
 cython --embed src/stdin.pyx -o build/stdin.c         || exit 1
 gcc -O2 -c build/stdin.c -I $HEADERS -o build/stdin.o || exit 1
