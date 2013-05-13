@@ -48,7 +48,6 @@ main()
   fds[1].events = POLLIN | POLLPRI;
 
   unsigned char buffer[1024];
-  int n;
 
   while (1)
   {
