@@ -48,6 +48,9 @@ UNICODE = int(open('UNICODE','rb').read().split('\n')[0]) if os.path.exists('UNI
 HASH_LOG = int(open('HASH_LOG','rb').read().split('\n')[0]) if os.path.exists('HASH_LOG') else 256
 OK_SECONDS = int(open('OK_SECONDS','rb').read().split('\n')[0]) if os.path.exists('OK_SECONDS') else 128
 
+NAMELESS = '\|' if os.path.exists('NAMELESS') and int(open('NAMELESS','rb').read().split('\n')[0]) else str()
+re_SPLIT_NAMELESS = re.compile(NAMELESS,re.IGNORECASE).split
+
 taias = dict()
 hashcache = collections.deque([],HASH_LOG)
 
@@ -82,7 +85,7 @@ while 1:
 
   if re_NICK_PRIVMSG_NOTICE_TOPIC(buffer):
 
-    src = buffer[1:].split('!',1)[0].lower()
+    src = re_SPLIT_NAMELESS( buffer[1:].split('!',1)[0].lower() )[0]
 
     if src in os.listdir('dstkey/'):
 
@@ -124,7 +127,7 @@ while 1:
 
   elif re_CHANNEL_PRIVMSG_NOTICE_TOPIC(buffer):
 
-    src = buffer[1:].split('!',1)[0].lower()
+    src = re_SPLIT_NAMELESS( buffer[1:].split('!',1)[0].lower() )[0]
     dst = re_SPLIT_SPACE(buffer,3)[2].lower()[1:]
     m   = re_SPLIT_SPACE_COLON(buffer,3)[3]
     h   = nacltaia.crypto_hash_sha256(m)

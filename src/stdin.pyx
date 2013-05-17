@@ -31,6 +31,9 @@ re_PREFIX = re.compile('^:['+RE+']+![~'+RE+'.]+@['+RE+'.]+ +',re.IGNORECASE).sea
 re_PRIVMSG_NICK = re.compile('^((PRIVMSG)|(NOTICE)|(TOPIC)) +['+RE+']+ +:?.*$',re.IGNORECASE).search
 re_PRIVMSG_CHANNEL = re.compile('^((PRIVMSG)|(NOTICE)|(TOPIC)) +[#&!+]['+RE+']+ +:?.*$',re.IGNORECASE).search
 
+NAMELESS = '\|' if os.path.exists('NAMELESS') and int(open('NAMELESS','rb').read().split('\n')[0]) else str()
+re_SPLIT_NAMELESS = re.compile(NAMELESS,re.IGNORECASE).split
+
 while 1:
 
   buffer = str()
@@ -45,7 +48,7 @@ while 1:
 
   if re_PRIVMSG_NICK(buffer):
 
-    dst = re_SPLIT_SPACE_COLON(buffer,2)[1].lower()
+    dst = re_SPLIT_NAMELESS( re_SPLIT_SPACE_COLON(buffer,2)[1].lower() )[0]
 
     if dst in os.listdir('dstkey/'):
 
