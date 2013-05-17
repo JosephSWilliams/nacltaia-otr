@@ -204,3 +204,8 @@ ucspi-tcp (tor):
 curvecp:
   tcpserver 127.0.0.1 6667 curvecpclient irc.crypto.net $pubkey 1.1.5.67 6667 $extension curvecpmessage -c ./stdio &
   irssi -c 127.0.0.1
+
+options:
+  echo 1 > crypto/COLOUR # allows IRC colour sequences
+  echo 1 > crypto/UNICODE # allows non-ascii
+  echo 1 > crypto/NAMELESS # maps only characters before '|' in nicks for cryptography
