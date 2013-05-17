@@ -42,6 +42,8 @@ ipc_poll=select.poll()
 ipc_poll.register(ipc.fileno(),select.POLLIN|select.POLLPRI)
 ipc_poll=ipc_poll.poll
 
+DEBUG = int(open('DEBUG','rb').read().split('\n')[0]) if os.path.exists('DEBUG') else 0
+
 COLOUR = int(open('COLOUR','rb').read().split('\n')[0]) if os.path.exists('COLOUR') else 0
 UNICODE = int(open('UNICODE','rb').read().split('\n')[0]) if os.path.exists('UNICODE') else 0
 
@@ -79,7 +81,9 @@ while 1:
     if len(h) < 32: sys.exit(128+32)
     cached(h)
 
-  if re_CRYPTOSERV(buffer): continue
+  if re_CRYPTOSERV(buffer):
+    if DEBUG: os.write(2,'nacltaia-otr: error: re_CRYPTOSERV(buffer)\n')
+    continue
 
   taia_now = nacltaia.taia_now_pack()
 
@@ -91,7 +95,9 @@ while 1:
 
       c = base91a.decode(re_SPLIT_SPACE_COLON(buffer,3)[3])
 
-      if not c: continue
+      if not c:
+        if DEBUG: os.write(2,'nacltaia-otr: error: base91a.decode(re_SPLIT_SPACE_COLON(buffer,3)[3])\n')
+        continue
 
       n  = c[:24]
       c  = c[24:]
@@ -99,7 +105,9 @@ while 1:
       sk = base91a.hex2bin(open('seckey','rb').read(64))
       c  = nacltaia.crypto_box_open(c,n,pk,sk)
 
-      if c == 0: continue
+      if c == 0:
+        if DEBUG: os.write(2,'nacltaia-otr: error: nacltaia.crypto_box_open(c,n,pk,sk)\n')
+        continue
 
       m    = 0
       taia = n[:16]
@@ -109,11 +117,15 @@ while 1:
         sk = open('tmpkey/'+src+'/sk','rb').read(32)
         m  = nacltaia.crypto_box_open(c[32:],n,pk,sk)
 
-      else: continue
+      else:
+        if DEBUG: os.write(2,'nacltaia-otr: error: len(c) < 32 + 16\n')
+        continue
 
       if not src in taias.keys(): taias[src] = taia_now
 
-      if not oksrctaia(OK_SECONDS,taia,taia_now): continue
+      if not oksrctaia(OK_SECONDS,taia,taia_now):
+        if DEBUG: os.write(2,'nacltaia-otr: error: oksrctaia(OK_SECONDS,taia,taia_now)\n')
+        continue
 
       if open('tmpkey/'+src+'/tk','rb').read(32) != pk: open('tmpkey/'+src+'/tk','wb').write(pk)
 
@@ -136,14 +148,18 @@ while 1:
 
       c = base91a.decode(m)
 
-      if not c: continue
+      if not c:
+        if DEBUG: os.write(2,'nacltaia-otr: error: base91a.decode(m)\n')
+        continue
 
       n = c[:24]
       c = c[24:]
       k = base91a.hex2bin(open('chnkey/'+dst,'rb').read(64))
       m = nacltaia.crypto_secretbox_open(c,n,k)
 
-      if m == 0: continue
+      if m == 0:
+        if DEBUG: os.write(2,'nacltaia-otr: error: nacltaia.crypto_secretbox_open(c,n,k)\n')
+        continue
 
       taia = n[:16]
 
@@ -152,32 +168,50 @@ while 1:
         pk = m[:32]
         m  = nacltaia.crypto_sign_open(m[32:],pk)
 
-        if m == 0: continue
+        if m == 0:
+          if DEBUG: os.write(2,'nacltaia-otr: error: nacltaia.crypto_sign_open(m[32:],pk)\n')
+          continue
 
-        if n != m[:24]: continue
+        if n != m[:24]:
+          if DEBUG: os.write(2,'nacltaia-otr: error: n != m[:24]\n')
+          continue
 
         m    = m[24:]
         taia = n[16:] + '\x00'*8
 
         if dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'):
 
-          if pk != base91a.hex2bin(open('unsign/'+dst+'/'+src,'rb').read(64)): continue
+          if pk != base91a.hex2bin(open('unsign/'+dst+'/'+src,'rb').read(64)):
+            if DEBUG: os.write(2,'nacltaia-otr: error: pk != base91a.hex2bin(open(\'unsign/\'+dst+\'/\'+src,\'rb\').read(64))\n')
+            continue
 
           if not src in taias.keys(): taias[src] = taia_now
 
-          if not oksrctaia(OK_SECONDS,taia,taia_now): continue
+          if not oksrctaia(OK_SECONDS,taia,taia_now):
+            if DEBUG: os.write(2,'nacltaia-otr: error: oksrctaia(OK_SECONDS,taia,taia_now)\n')
+            continue
 
           taias[src] = taia
 
-        elif nacltaia.taia_okseconds(OK_SECONDS,taia)<1: continue
+        elif nacltaia.taia_okseconds(OK_SECONDS,taia)<1:
+          if DEBUG: os.write(2,'nacltaia-otr: error: nacltaia.taia_okseconds(OK_SECONDS,taia)\n')
+          continue
 
-        elif cached(h): continue
+        elif cached(h):
+          if DEBUG: os.write(2,'nacltaia-otr: error: cached(h)\n')
+          continue
 
-      elif dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'): continue
+      elif dst in os.listdir('unsign/') and src in os.listdir('unsign/'+dst+'/'):
+        if DEBUG: os.write(2,'nacltaia-otr: error: dst in os.listdir(\'unsign/\') and src in os.listdir(\'unsign/\'+dst+\'/\')\n')
+        continue
 
-      elif nacltaia.taia_okseconds(OK_SECONDS,taia)<1: continue
+      elif nacltaia.taia_okseconds(OK_SECONDS,taia)<1:
+        if DEBUG: os.write(2,'nacltaia-otr: error: nacltaia.taia_okseconds(OK_SECONDS,taia)\n')
+        continue
 
-      elif cached(h): continue
+      elif cached(h):
+        if DEBUG: os.write(2,'nacltaia-otr: error: cached(h)\n')
+        continue
 
       buffer = ' '.join(re_SPLIT_SPACE(buffer,3)[:3]) + ' :' + m.split('\n',1)[0]
 
@@ -188,19 +222,27 @@ while 1:
       n  = m[:24]
       m  = nacltaia.crypto_sign_open(m[56:],pk)
 
-      if m == 0: continue
+      if m == 0:
+        if DEBUG: os.write(2,'nacltaia-otr: error: nacltaia.crypto_sign_open(m[56:],pk)\n')
+        continue
 
-      if n != m[:24]: continue
+      if n != m[:24]:
+        if DEBUG: os.write(2,'nacltaia-otr: error: n != m[:24]\n')
+        continue
 
       m = m[24:]
 
       taia = n[:16]
 
-      if pk != base91a.hex2bin(open('unsign/'+dst+'/'+src,'rb').read(64)): continue
+      if pk != base91a.hex2bin(open('unsign/'+dst+'/'+src,'rb').read(64)):
+        if DEBUG: os.write(2,'nacltaia-otr: error: pk != base91a.hex2bin(open(\'unsign/\'+dst+\'/\'+src\'rb\').read(64))\n')
+        continue
 
       if not src in taias.keys(): taias[src] = taia_now
 
-      if not oksrctaia(OK_SECONDS,taia,taia_now): continue
+      if not oksrctaia(OK_SECONDS,taia,taia_now):
+        if DEBUG: os.write(2,'nacltaia-otr: error: oksrctaia(OK_SECONDS,taia,taia_now)\n')
+        continue
 
       taias[src] = taia
 
@@ -219,17 +261,25 @@ while 1:
 
         m = nacltaia.crypto_sign_open(m[56:],pk)
 
-        if m == 0: continue
+        if m == 0:
+          if DEBUG: os.write(2,'nacltaia-otr: error: nacltaia.crypto_sign_open(m[56:],pk)\n')
+          continue
 
-        if n != m[:24]: continue
+        if n != m[:24]:
+          if DEBUG: os.write(2,'nacltaia-otr: error: n != m[:24]\n')
+          continue
 
         m = m[24:]
 
         taia = n[:16]
 
-        if nacltaia.taia_okseconds(OK_SECONDS,taia)<1: continue
+        if nacltaia.taia_okseconds(OK_SECONDS,taia)<1:
+          if DEBUG: os.write(2,'nacltaia-otr: error: nacltaia.taia_okseconds(OK_SECONDS,taia)\n')
+          continue
 
-        elif cached(h): continue
+        elif cached(h):
+          if DEBUG: os.write(2,'nacltaia-otr: error: cached(h)\n')
+          continue
 
       else: m = re_SPLIT_SPACE_COLON(buffer,3)[3]
 

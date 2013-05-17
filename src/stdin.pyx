@@ -31,6 +31,8 @@ re_PREFIX = re.compile('^:['+RE+']+![~'+RE+'.]+@['+RE+'.]+ +',re.IGNORECASE).sea
 re_PRIVMSG_NICK = re.compile('^((PRIVMSG)|(NOTICE)|(TOPIC)) +['+RE+']+ +:?.*$',re.IGNORECASE).search
 re_PRIVMSG_CHANNEL = re.compile('^((PRIVMSG)|(NOTICE)|(TOPIC)) +[#&!+]['+RE+']+ +:?.*$',re.IGNORECASE).search
 
+DEBUG = int(open('DEBUG','rb').read().split('\n')[0]) if os.path.exists('DEBUG') else 0
+
 NAMELESS = '\|' if os.path.exists('NAMELESS') and int(open('NAMELESS','rb').read().split('\n')[0]) else str()
 re_SPLIT_NAMELESS = re.compile(NAMELESS,re.IGNORECASE).split
 
@@ -59,12 +61,20 @@ while 1:
       pk     = open('tmpkey/'+dst+'/tk','rb').read(32)
       sk     = open('tmpkey/'+dst+'/sk','rb').read(32)
       c      = nacltaia.crypto_box(m,n,pk,sk)
-      c      = str() if c == 0 else c
+
+      if c == 0:
+        if DEBUG: os.write(2,'nacltaia-otr: error: nacltaia.crypto_box(m,n,pk,sk)\n')
+        continue
+
       c      = open('tmpkey/'+dst+'/pk','rb').read(32) + c
       pk     = base91a.hex2bin(open('dstkey/'+dst,'rb').read(64))
       sk     = base91a.hex2bin(open('seckey','rb').read(64))
       c      = nacltaia.crypto_box(c,n,pk,sk)
-      c      = str() if c == 0 else c
+
+      if c == 0:
+        if DEBUG: os.write(2,'nacltaia-otr: error: nacltaia.crypto_box(c,n,pk,sk)\n')
+        continue
+
       buffer = ' '.join(re_SPLIT_SPACE(buffer,2)[:2]) + ' :' + base91a.encode(n+c)
 
   elif re_PRIVMSG_CHANNEL(buffer):
@@ -83,11 +93,19 @@ while 1:
       n      = array.array('B',[0 for i in range(0,16)]).tostring()
       n     += nacltaia.taia_now_pack()[:8]
       m      = nacltaia.crypto_sign(n+m,sk)
-      m      = str() if m == 0 else m
+
+      if m == 0:
+        if DEBUG: os.write(2,'nacltaia-otr: error: nacltaia.crypto_sign(n+m,sk)\n')
+        continue
+
       m      = pk + m
       k      = base91a.hex2bin(open('chnkey/'+dst,'rb').read(64))
       c      = nacltaia.crypto_secretbox(m,n,k)
-      c      = str() if c == 0 else c
+
+      if c == 0:
+        if DEBUG: os.write(2,'nacltaia-otr: error: nacltaia.crypto_secretbox(m,n,k)\n')
+        continue
+
       c      = base91a.encode(n+c)
       h      = nacltaia.crypto_hash_sha256(c)
       buffer = ' '.join(re_SPLIT_SPACE(buffer,2)[:2]) + ' :' + c
@@ -100,7 +118,11 @@ while 1:
       n     += array.array('B',[rR(0,256) for i in range(0,8)]).tostring()
       k      = base91a.hex2bin(open('chnkey/'+dst,'rb').read(64))
       c      = nacltaia.crypto_secretbox(m,n,k)
-      c      = str() if c == 0 else c
+
+      if c == 0:
+        if DEBUG: os.write(2,'nacltaia-otr: error: nacltaia.crypto_secretbox(m,n,k)\n')
+        continue
+
       c      = base91a.encode(n+c)
       h      = nacltaia.crypto_hash_sha256(c)
       buffer = ' '.join(re_SPLIT_SPACE(buffer,2)[:2]) + ' :' + c
@@ -114,7 +136,11 @@ while 1:
       pk     = base91a.hex2bin(open('sign/'+dst+'/pubkey','rb').read(64))
       sk     = base91a.hex2bin(open('sign/'+dst+'/seckey','rb').read(128))
       m      = nacltaia.crypto_sign(n+m,sk)
-      m      = str() if m == 0 else m
+
+      if m == 0:
+        if DEBUG: os.write(2,'nacltaia-otr: error: nacltaia.crypto_sign(n+m,sk)\n')
+        continue
+
       m      = base91a.encode(n+pk+m)
       h      = nacltaia.crypto_hash_sha256(m)
       buffer = ' '.join(re_SPLIT_SPACE(buffer,2)[:2]) + ' :' + m
