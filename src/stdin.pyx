@@ -64,7 +64,7 @@ while 1:
 
       if c == 0:
         if DEBUG: os.write(2,'nacltaia-otr: error: nacltaia.crypto_box(m,n,pk,sk)\n')
-        continue
+        c = str()
 
       c      = open('tmpkey/'+dst+'/pk','rb').read(32) + c
       pk     = base91a.hex2bin(open('dstkey/'+dst,'rb').read(64))

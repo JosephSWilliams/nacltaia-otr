@@ -112,13 +112,14 @@ while 1:
       m    = 0
       taia = n[:16]
 
-      if len(c) >= 32 + 16:
+      if len(c) >= 32:
         pk = c[:32]
         sk = open('tmpkey/'+src+'/sk','rb').read(32)
         m  = nacltaia.crypto_box_open(c[32:],n,pk,sk)
+        if open('tmpkey/'+src+'/tk','rb').read(32) != pk: open('tmpkey/'+src+'/tk','wb').write(pk)
 
       else:
-        if DEBUG: os.write(2,'nacltaia-otr: error: len(c) < 32 + 16\n')
+        if DEBUG: os.write(2,'nacltaia-otr: error: len(c) < 32\n')
         continue
 
       if not src in taias.keys(): taias[src] = taia_now
@@ -126,8 +127,6 @@ while 1:
       if not oksrctaia(OK_SECONDS,taia,taia_now):
         if DEBUG: os.write(2,'nacltaia-otr: error: oksrctaia(OK_SECONDS,taia,taia_now)\n')
         continue
-
-      if open('tmpkey/'+src+'/tk','rb').read(32) != pk: open('tmpkey/'+src+'/tk','wb').write(pk)
 
       taias[src] = taia
 
