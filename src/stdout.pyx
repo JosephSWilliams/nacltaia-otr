@@ -67,6 +67,12 @@ def cached(h):
   hashcache.append(h)
   return 0
 
+def ret_322_332_msg(cmd,buffer):
+  try:
+    return re_SPLIT_BRACKETS(re_SPLIT_SPACE_COLON(buffer,5)[5],2)[2][1:] if cmd == '322' else re_SPLIT_SPACE_COLON(buffer,4)[4]
+  except:
+    return re_SPLIT_SPACE_COLON(buffer,5)[5] if cmd == '322' else re_SPLIT_SPACE_COLON(buffer,4)[4]
+
 while 1:
 
   buffer = str()
@@ -288,7 +294,7 @@ while 1:
 
     dst = re_SPLIT_SPACE(buffer,4)[3].lower()[1:]
     cmd = re_SPLIT_SPACE(buffer,2)[1]
-    m   = re_SPLIT_BRACKETS(re_SPLIT_SPACE_COLON(buffer,5)[5],2)[2][1:] if cmd == '322' else re_SPLIT_SPACE_COLON(buffer,4)[4]
+    m   = ret_322_332_msg(cmd,buffer)
 
     if dst in os.listdir('chnkey/'):
 
@@ -322,13 +328,15 @@ while 1:
         m  = str() if m == 0 else m
         m  = m[24:]
 
-      else: m = re_SPLIT_BRACKETS(re_SPLIT_SPACE_COLON(buffer,5)[5],2)[2][1:] if cmd == '322' else re_SPLIT_SPACE_COLON(buffer,4)[4]
+      else: m = ret_322_332_msg(cmd,buffer)
 
-    else: m = re_SPLIT_BRACKETS(re_SPLIT_SPACE_COLON(buffer,5)[5],2)[2][1:] if cmd == '322' else re_SPLIT_SPACE_COLON(buffer,4)[4]
+    else: m = ret_322_332_msg(cmd,buffer)
 
     if cmd == '322':
 
-      m = '[' + re_SPLIT_BRACKETS(re_SPLIT_SPACE_COLON(buffer,5)[5],2)[1] + '] ' + m
+      try:
+        m = '[' + re_SPLIT_BRACKETS(re_SPLIT_SPACE_COLON(buffer,5)[5],2)[1] + '] ' + m
+      except: pass
 
       buffer = ' '.join(re_SPLIT_SPACE(buffer,5)[:5]) + ' :' + m.split('\n',1)[0]
 
