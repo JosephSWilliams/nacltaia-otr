@@ -334,8 +334,7 @@ while 1:
 
     if cmd == '322':
 
-      try:
-        m = '[' + re_SPLIT_BRACKETS(re_SPLIT_SPACE_COLON(buffer,5)[5],2)[1] + '] ' + m
+      try: m = '[' + re_SPLIT_BRACKETS(re_SPLIT_SPACE_COLON(buffer,5)[5],2)[1] + '] ' + m
       except: pass
 
       buffer = ' '.join(re_SPLIT_SPACE(buffer,5)[:5]) + ' :' + m.split('\n',1)[0]
