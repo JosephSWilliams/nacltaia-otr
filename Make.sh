@@ -40,8 +40,8 @@ gcc -O2 -fPIC -DPIC src/nacltaia.c -shared -I $HEADERS -o nacltaia.so -l python2
 
 if ! $(which cython 2>&1 >/dev/null); then
 
-  cp src/stdio.pyx stdio || exit 1
-  chmod +x stdio         || exit 1
+  #cp src/stdio.pyx stdio || exit 1
+  #chmod +x stdio         || exit 1
 
   cp src/stdin.pyx stdin || exit 1
   chmod +x stdin         || exit 1
