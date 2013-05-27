@@ -11,6 +11,7 @@ import time
 import pwd
 import re
 
+taias = dict()
 RE = 'a-zA-Z0-9^(\)\-_{\}[\]|'
 re_SPLIT_SPACE = re.compile(' +',re.IGNORECASE).split
 re_SPLIT_SPACE_COLON = re.compile(' +:?',re.IGNORECASE).split
@@ -21,40 +22,6 @@ re_CHANNEL_PRIVMSG_NOTICE_TOPIC = re.compile('^:['+RE+']+![~'+RE+'.]+@['+RE+'.]+
 re_322_332 = re.compile('^:['+RE+'.]+ +((322)|(332)) +['+RE+']+ +[#&!+]['+RE+']+ ?([0-9]+)? +:?.*$',re.IGNORECASE).search
 re_BUFFER_CTCP_DCC = re.compile('\x01(?!ACTION )',re.IGNORECASE).sub
 re_BUFFER_COLOUR = re.compile('(\x03[0-9][0-9]?((?<=[0-9]),[0-9]?[0-9]?)?)|[\x02\x03\x0f\x1d\x1f]',re.IGNORECASE).sub
-
-uid, gid = pwd.getpwnam('nacltaia-otr')[2:4]
-os.chdir('crypto/')
-os.chroot(os.getcwd())
-os.setgid(gid)
-os.setuid(uid)
-del uid, gid
-
-ipc=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM) # contains potential race condition
-for n in range(0,9):
-  if n == 8: sys.exit(128+111)
-  try:
-    ipc.connect('socket')
-    del n
-    break
-  except:
-    time.sleep(0.1)
-ipc_poll=select.poll()
-ipc_poll.register(ipc.fileno(),select.POLLIN|select.POLLPRI)
-ipc_poll=ipc_poll.poll
-
-DEBUG = int(open('DEBUG','rb').read().split('\n')[0]) if os.path.exists('DEBUG') else 0
-
-COLOUR = int(open('COLOUR','rb').read().split('\n')[0]) if os.path.exists('COLOUR') else 0
-UNICODE = int(open('UNICODE','rb').read().split('\n')[0]) if os.path.exists('UNICODE') else 0
-
-HASH_LOG = int(open('HASH_LOG','rb').read().split('\n')[0]) if os.path.exists('HASH_LOG') else 256
-OK_SECONDS = int(open('OK_SECONDS','rb').read().split('\n')[0]) if os.path.exists('OK_SECONDS') else 128
-
-NAMELESS = '\|' if os.path.exists('NAMELESS') and int(open('NAMELESS','rb').read().split('\n')[0]) else str()
-re_SPLIT_NAMELESS = re.compile(NAMELESS,re.IGNORECASE).split
-
-taias = dict()
-hashcache = collections.deque([],HASH_LOG)
 
 def oksrctaia(n,taia,taia_now):
   if nacltaia.taia_okseconds(n,taia)<1: return 0
@@ -73,7 +40,46 @@ def ret_322_332_msg(cmd,buffer):
   except:
     return re_SPLIT_SPACE_COLON(buffer,5)[5] if cmd == '322' else re_SPLIT_SPACE_COLON(buffer,4)[4]
 
+uid, gid = pwd.getpwnam('nacltaia-otr')[2:4]
+os.chdir('crypto/')
+os.chroot(os.getcwd())
+os.setgid(gid)
+os.setuid(uid)
+del uid, gid
+
+ipc=socket.socket(socket.AF_UNIX,socket.SOCK_STREAM) # contains potential race condition
+for n in range(0,9):
+  if n == 8: sys.exit(128+111)
+  try:
+    ipc.connect('socket')
+    del n
+    break
+  except: time.sleep(0.1)
+ipc_poll=select.poll()
+ipc_poll.register(ipc.fileno(),select.POLLIN|select.POLLPRI)
+ipc_poll=ipc_poll.poll
+
+poll=select.poll()
+poll.register(ipc.fileno(),select.POLLIN|select.POLLPRI)
+poll.register(0,select.POLLIN|select.POLLPRI)
+poll=poll.poll
+
+DEBUG = int(open('DEBUG','rb').read().split('\n')[0]) if os.path.exists('DEBUG') else 0
+COLOUR = int(open('COLOUR','rb').read().split('\n')[0]) if os.path.exists('COLOUR') else 0
+UNICODE = int(open('UNICODE','rb').read().split('\n')[0]) if os.path.exists('UNICODE') else 0
+HASH_LOG = int(open('HASH_LOG','rb').read().split('\n')[0]) if os.path.exists('HASH_LOG') else 256
+OK_SECONDS = int(open('OK_SECONDS','rb').read().split('\n')[0]) if os.path.exists('OK_SECONDS') else 128
+NAMELESS = '\|' if os.path.exists('NAMELESS') and int(open('NAMELESS','rb').read().split('\n')[0]) else str()
+re_SPLIT_NAMELESS = re.compile(NAMELESS,re.IGNORECASE).split
+hashcache = collections.deque([],HASH_LOG)
+
 while 1:
+
+  if len(poll(-1)) < 2 and ipc_poll(0):
+    h = ipc.recv(32)
+    if len(h) < 32: sys.exit(128+32)
+    cached(h)
+    continue
 
   buffer = str()
   while 1:
