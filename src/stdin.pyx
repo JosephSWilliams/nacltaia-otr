@@ -147,8 +147,7 @@ while 1:
 
     try:
       if h and buffer[:6].upper() != 'TOPIC ': ipc.send(h)
-    except:
-      sys.exit(128+32)
+    except: sys.exit(128+32)
 
   if prefix: os.write(1,prefix+' ')
   os.write(1,buffer+'\n')
