@@ -7,5 +7,9 @@ fi
 
 mkdir -p "$1"/dstkey/
 mkdir -p "$1"/tmpkey/$2
+
+head -c 32 /dev/urandom > "$1"/tmpkey/$2/tk
+
 printf $3 > "$1"/dstkey/$2
+
 ./touchcrypto "$1"
